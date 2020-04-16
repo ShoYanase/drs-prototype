@@ -6,15 +6,21 @@
   <script type="text/javascript" src="https://unpkg.com/vis-network@7.5.2/standalone/umd/vis-network.min.js"></script>
 
   <style type="text/css">
+    body {
+      background-color: #3f4644;
+    }
+    button, input, select, textarea, optgroup {
+      font: inherit;
+      margin: 0;
+    }
     #mynetwork {
-      width: 900px;
       height: 400px;
-      border: 3px solid lightgray;
-      background: #FCE9D6;
+      border: 1px solid #76eec6;
+      background: #303534;
     }
     code {
       font-size: 14px;
-      background: #dddddd;
+      background: #575f5d;
     }
     p {
       max-width: 600px;
@@ -26,7 +32,7 @@
       height: 1px;
       width: 35%;
       margin-left: 40px;
-      background-color: #110e18;
+      background-color: #dddddd;
     }
   </style>
   
@@ -36,7 +42,28 @@
 
 <div id="mynetwork"></div>
 
+<div class="textinput">
+  <textarea class="text_in" style="resize:none" placeholder="文章を入力する"></textarea>
+  <input class="button_sub" type="submit" value="Submit" formaction="/**URL*/" formmethod="POST">
+</div>
 
+<style type="text/css">
+  .text_in{
+    font-size: 14px;
+    padding: 10px 15px;
+    width: 100%;
+    border: 1px solid #76eec6;
+    padding-top: 5px;
+    padding-bottom: 8px;
+    box-sizing: border-box;
+  }
+  .text_in:focus{
+    height: 200px;
+  }
+  #button_sub{
+    
+  }
+</style>
 
 <script type="text/javascript" src="sample-nodes.js">
 </script>

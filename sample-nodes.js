@@ -5,9 +5,9 @@
         arr_nodes.push({
             id: i+1,
             label: arr_labels[i],
-            font: {color:'#544851'},
-            color: {background: '#EDE1E1',
-                    border: '#544851'
+            font: {color:'#ffffff'},
+            color: {background: '#575f5d',
+                    border: '#76eec6'
             },
         });
     }
@@ -24,6 +24,8 @@ function make_first_edges(points_matrix, thres){
                     from: i+1, 
                     to: j+1, 
                     label: String(points_matrix[i][j]),
+                    font: {size: 10},
+                    color: '#76eec6',
                     arrows: {
                         to:{
                             enabled: true,
@@ -114,6 +116,7 @@ var options = {
     enabled: true,
     addEdge: function (data, callback) {
       data.label = String(points_matrix[data.from][data.to]),
+      data.color = '#ffffff',
       data.arrows = {
         to:{
             enabled: true,
