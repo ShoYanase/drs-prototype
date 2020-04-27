@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" charset="UTF-8" />
+<title>Sending forms with FormData &ndash; MDN</title>
+<script src="Ajax-xmlFD.js"></script>
+</head>
+<body>
+
+<h1>Sending forms with FormData</h1>
+
+<h2>Using the GET method</h2>
+
+<form action="register.php" method="get" onsubmit="AJAXSubmit(this); return false;">
+  <fieldset>
+    <legend>Registration example</legend>
+    <p>
+      First name: <input type="text" name="firstname" /><br />
+      Last name: <input type="text" name="lastname" />
+    </p>
+    <p>
+      <input type="submit" value="Submit" />
+    </p>
+  </fieldset>
+</form>
+
+<h2>Using the POST method</h2>
+<h3>Enctype: application/x-www-form-urlencoded (default)</h3>
+
+<form action="register.php" method="post" onsubmit="AJAXSubmit(this); return false;">
+  <fieldset>
+    <div class="textinput">
+      <textarea class="text_in" style="resize:none" placeholder="文章を入力する"></textarea>
+      <input class="button_sub" type="submit" value="Submit" formaction="/**URL*/" formmethod="POST">
+    </div>
+  </fieldset>
+  <style type="text/css">
+    body {
+      background-color: #3f4644;
+    }
+    button, input, select, textarea, optgroup {
+      font: inherit;
+      margin: 0;
+    }
+    #mynetwork {
+      height: 400px;
+      border: 1px solid #76eec6;
+      background: #303534;
+    }
+    code {
+      font-size: 14px;
+      background: #575f5d;
+    }
+    p {
+      max-width: 600px;
+    }
+    .indented {
+      margin-left: 30px;
+    }
+    .sep {
+      height: 1px;
+      width: 35%;
+      margin-left: 40px;
+      background-color: #dddddd;
+    }
+
+  .text_in{
+    font-size: 14px;
+    padding: 10px 15px;
+    width: 100%;
+    border: 1px solid #76eec6;
+    padding-top: 5px;
+    padding-bottom: 8px;
+    box-sizing: border-box;
+  }
+  .text_in:focus{
+    height: 200px;
+  }
+  </style>
+</form>
+
+<h3>Enctype: text/plain</h3>
+
+<p>The text/plain encoding is not supported by the FormData API.</p>
+
+<h3>Enctype: multipart/form-data</h3>
+
+<form action="register.php" method="post" enctype="multipart/form-data"
+    onsubmit="AJAXSubmit(this); return false;">
+  <fieldset>
+    <legend>Upload example</legend>
+    <p>
+      First name: <input type="text" name="firstname" /><br />
+      Last name: <input type="text" name="lastname" /><br />
+      Sex:
+      <input id="sex_male" type="radio" name="sex" value="male" />
+      <label for="sex_male">Male</label>
+      <input id="sex_female" type="radio" name="sex" value="female" />
+      <label for="sex_female">Female</label><br />
+      Password: <input type="password" name="secret" /><br />
+      What do you prefer:
+      <select name="image_type">
+        <option>Books</option>
+        <option>Cinema</option>
+        <option>TV</option>
+      </select>
+    </p>
+    <p>
+      Post your photos:
+      <input type="file" multiple name="photos[]">
+    </p>
+    <p>
+      <input id="vehicle_bike" type="checkbox" name="vehicle[]" value="Bike" />
+      <label for="vehicle_bike">I have a bike</label><br />
+      <input id="vehicle_car" type="checkbox" name="vehicle[]" value="Car" />
+      <label for="vehicle_car">I have a car</label>
+    </p>
+    <p>
+      Describe yourself:<br />
+      <textarea name="description" cols="50" rows="8"></textarea>
+    </p>
+    <p>
+      <input type="submit" value="Submit" />
+    </p>
+  </fieldset>
+</form>
+</body>
+</html>

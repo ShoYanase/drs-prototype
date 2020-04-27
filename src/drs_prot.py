@@ -76,7 +76,7 @@ def predict_Sentence_attr(vec, model):
   prediction = np.where(prediction=='2', 'ground', prediction)
   return prediction.tolist()
 
-def Content_Classification(paragraph):
+def Content_Classification(paragraph, wv_model, sentence_attr_model):
   parsed = parse_Parag_to_Word(paragraph)
   arr_attr = []
   for p in parsed:
@@ -122,8 +122,6 @@ def search_Rules(df_rules, attr):
     arr_rules = pd.concat([arr_rules,res], axis=0)
   return arr_rules  
 
-for index, attr in attrs.iterrows():
-  rules = search_Rules(df_conjuction_points, attr)
 
 """### 加点行列をつくる"""
 #search_ConjuctionからDataFrame.iterrows()でiterateしてattrでrsearch_Rulesから抽出適用・構造候補の加点行列を作る
@@ -260,9 +258,11 @@ def Commonword_addmat(sentences, matsize, df_exeptwords, coef, thres):
 path_Content_points = "../data/data_prot/Rules/Content_points.csv"
 df_Content_points = pd.read_csv(path_Content_points)
 ##要素分類モデル
-path_sentence_attr_model = "../data/Statement_attributes/model_svc.model"
+path_sentence_attr_model = "../data/model_svc.model"
+sentence_attr_model = load(path_sentence_attr_model)
 ##w2vモデル
 path_wv_model = "../data/word2vec.model"
+wv_model = load(path_wv_model)
 
 #接続詞
 ##接続関係と点数
@@ -307,35 +307,42 @@ def Point_matrix(paragraph, target):
   points_mat = np.array([[50]*target for i in range(len_sentence)])
 
   #要素分類
-  print("---------------要素分類------------------------------------------------")
-  arr_content = Content_Classification(paragraph)[:-1]
+  #print("---------------要素分類------------------------------------------------")
+  arr_content = Content_Classification(paragraph, wv_model, sentence_attr_model)[:-1]
   arr_content.append('claim')
   #arr_content = ["ground", "ground", "ground", "claim", "claim", "claim", "claim", "claim", "ground", "claim"]
   content_addmat = Content_addmat(arr_content, target, df_Content_points)
-  print(arr_content,"\n",content_addmat)
+  #print(arr_content,"\n",content_addmat)
   points_mat += content_addmat
 
   #指示代名詞
-  print("---------------指示代名詞------------------------------------------------")
+  #print("---------------指示代名詞------------------------------------------------")
   directive_addmat = Directive_addmat(sentences, target, directive_point)
   points_mat += directive_addmat
   
   #他キーワード
-  print("---------------キーワード------------------------------------------------")
+  #print("---------------キーワード------------------------------------------------")
   keyword_addmat = Keyword_addmat(sentences, target, df_keywords)
   points_mat += keyword_addmat
 
   #共通の単語
-  print("---------------共通の単語------------------------------------------------")
+  #print("---------------共通の単語------------------------------------------------")
   commonword_addmat = Commonword_addmat(sentences, target, df_exeptwords, commonwords_coef, commonwords_thres)
   points_mat += commonword_addmat
 
   #接続詞の加点行列
-  print("---------------接続詞------------------------------------------------")
+  #print("---------------接続詞------------------------------------------------")
   conjuction_addmat = Paragraph_to_Conjuction_addmat(df_conjuction_attr, df_conjuction_points, sentences, arr_content)
   conjuction_addmat['matrix'] = conjuction_addmat['matrix'].map(lambda x: x + points_mat)
-  print("---------------------------------------------------------------------")
+  #print("---------------------------------------------------------------------")
 
-  return conjuction_addmat
+  res_mat = []
+  res_label = []
+  for index, row in conjuction_addmat.iterrow():
+    res_mat.append(row['matrix'].tolist())
+    res_label.append(row['label'])
+  print(res_mat)
 
-df_result = Point_matrix("グラフを見ると、バッファサイズが非常に小さいときファイルサイズが大きいと非常に時間がかかっている。またread/writeの方がrecv/sendより僅かの差だが、多くの時間を要している。そして、バッファサイズを大きくしていっても、同様にread/writeがrecv/sendより速くなることはなかった。この要因は、ファイルの通信処理はソケットを用いて通信した方が速くなるからであると考える。",4)
+  return conjuction_addmat, 
+
+Point_matrix("図26、図27より、バッファサイズが大きくなる程実行時間が短くなることがわかる.さらに、それぞれの近似曲線より、バッファサイズをx、実行時間をyとすると、両者の関係はy=a/x(aはある特定の定数)という方程式で近似的に表せることができ、実行時間はバッファサイズに反比例していることがわかる.また図27より、read、writeによる実装よりも、fread、fwriteによる実装の方が実行時間が速いことがわかる.実行時間がバッファサイズに反比例したのは、次のような理由が考えられる.cでは、ファイルの内容がバッファサイズごとに読み取り・書き込みが行われる.その処理の回数はバッファサイズに反比例する.よって読み取り・書き込みの回数が増えることによって実行時間が増えると考えられる.read、writeによる実装よりも、fread、fwriteによる実装の方が実行時間が速いのには、以下のような理由が考えられる.cは、両者とも同じバッファサイズで実行しているが、システムコールread、write関数の呼び出し回数が大きく違う.これによって両者の実行時間の違いが出ていると考えられる.", 4)
