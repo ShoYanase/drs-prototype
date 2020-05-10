@@ -5,7 +5,7 @@
 
   <script type="text/javascript" src="https://unpkg.com/vis-network@7.5.2/standalone/umd/vis-network.min.js"></script>
   <script type="text/javascript" src="https://unpkg.com/jquery@1.11.2/dist/jquery.min.js"></script>
-  <script type="text/javascript" src="Ajax-xmlFD.js"></script>
+  <script type="text/javascript" src="Ajax-xhr.js"></script>
   <script type="text/javascript" src="sample-nodes.js"></script>
 
   <style type="text/css">
@@ -58,14 +58,14 @@
 
 <div id="mynetwork"></div>
 
-<form action="http://127.0.0.1:5000/point_matrix" method="post" onsubmit="AJAXSubmit(this); return false;">
+<form action="http://127.0.0.1:5000/point_matrix" method="post" onsubmit="AJAXSubmit(this); act_mynetwork(arr_labels, points_matrix, numberthres); return false;">
   <div class="textinput">
     <textarea class="text_in" style="resize:none" placeholder="文章を入力する" name="text_in"></textarea>
-    <textarea  placeholder="結論の文" name="target"></textarea>
-    <input class="button_sub" type="submit" value="Submit">
+    <input type="number" placeholder="結論の文" name="target"></input>
+    <input type="number" name="numberthres" value="55" onchange="act_mynetwork(arr_labels, points_matrix, numberthres);">
+    <input type="submit" value="Submit">
   </div>
 </form>
-
 
 </body>
 </html>

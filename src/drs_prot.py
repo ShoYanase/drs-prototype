@@ -253,6 +253,7 @@ def Commonword_addmat(sentences, matsize, df_exeptwords, coef, thres):
   return points_mat
 
 """# main"""
+print(os.chdir(os.path.dirname(os.path.abspath(__file__))))
 #要素分類
 ##点数
 path_Content_points = "../data/data_prot/Rules/Content_points.csv"
@@ -303,6 +304,9 @@ def Point_matrix(paragraph, target):
     sentences = sentences[:target]
     len_sentence = len(sentences)
 
+  words = [''.join([w for w in [sentence[n][0] for n in range(len(sentence)-1)]]) for sentence in sentences]
+  print(words)
+
   #点数の行列
   points_mat = np.array([[50]*target for i in range(len_sentence)])
 
@@ -338,11 +342,12 @@ def Point_matrix(paragraph, target):
 
   res_mat = []
   res_label = []
-  for index, row in conjuction_addmat.iterrow():
+  for index, row in conjuction_addmat.iterrows():
     res_mat.append(row['matrix'].tolist())
     res_label.append(row['label'])
   print(res_mat)
+  print(res_label)
 
-  return conjuction_addmat, 
+  return res_mat, res_label, words, arr_content
 
 Point_matrix("図26、図27より、バッファサイズが大きくなる程実行時間が短くなることがわかる.さらに、それぞれの近似曲線より、バッファサイズをx、実行時間をyとすると、両者の関係はy=a/x(aはある特定の定数)という方程式で近似的に表せることができ、実行時間はバッファサイズに反比例していることがわかる.また図27より、read、writeによる実装よりも、fread、fwriteによる実装の方が実行時間が速いことがわかる.実行時間がバッファサイズに反比例したのは、次のような理由が考えられる.cでは、ファイルの内容がバッファサイズごとに読み取り・書き込みが行われる.その処理の回数はバッファサイズに反比例する.よって読み取り・書き込みの回数が増えることによって実行時間が増えると考えられる.read、writeによる実装よりも、fread、fwriteによる実装の方が実行時間が速いのには、以下のような理由が考えられる.cは、両者とも同じバッファサイズで実行しているが、システムコールread、write関数の呼び出し回数が大きく違う.これによって両者の実行時間の違いが出ていると考えられる.", 4)

@@ -1,7 +1,7 @@
 function ajaxSuccess () {
   console.log(this.responseText);
 }
-  
+
 function AJAXSubmit (oFormElement) {
   if (!oFormElement.action) { return; }
   var oReq = new XMLHttpRequest();
@@ -26,20 +26,16 @@ function AJAXSubmit (oFormElement) {
       }
     }
     oReq.open("get", oFormElement.action.replace(/(?:\?.*)?$/, sSearch.replace(/^&/, "?")), true);
-    oReq.send(null);
-
-    
+    oReq.send(null);  
   }
 
   oReq.onreadystatechange = function() {
     if (oReq.readyState === 4) {
-      let res = oReq.response;
-      let obj = JSON.parse(res)
-      console.log(obj.paragraph)
-      console.log(obj.matrix[0])
-      let arr_labels = obj.paragraph;
-      let points_matrix = obj.matrix;
-      act_mynetwork(arr_labels, points_matrix[0], 55)
+      res = oReq.response;
+      obj = JSON.parse(res);
+      arr_labels = obj.paragraph;
+      points_matrix = obj.matrix[0];
+      console.log(arr_labels, points_matrix);
     }
   }
 }
