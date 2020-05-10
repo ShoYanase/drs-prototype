@@ -4,7 +4,9 @@
   <title>Vis Network | drs interface prototype</title>
 
   <script type="text/javascript" src="https://unpkg.com/vis-network@7.5.2/standalone/umd/vis-network.min.js"></script>
-  <script type="text/javascript" src="https://unpkg.com/jquery@1.11.2/dist/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
   <script type="text/javascript" src="Ajax-xhr.js"></script>
   <script type="text/javascript" src="sample-nodes.js"></script>
 
@@ -58,11 +60,11 @@
 
 <div id="mynetwork"></div>
 
-<form action="http://127.0.0.1:5000/point_matrix" method="post" onsubmit="AJAXSubmit(this); act_mynetwork(arr_labels, points_matrix, numberthres); return false;">
+<form action="http://127.0.0.1:5000/point_matrix" method="post" onsubmit="AJAXSubmit(this); console.log('ajax response\n',arr_labels, points_matrix, matrix_label); act_mynetwork(arr_labels, points_matrix, numberthres.value, matrix_label); return false;">
   <div class="textinput">
     <textarea class="text_in" style="resize:none" placeholder="文章を入力する" name="text_in"></textarea>
     <input type="number" placeholder="結論の文" name="target"></input>
-    <input type="number" name="numberthres" value="55" onchange="act_mynetwork(arr_labels, points_matrix, numberthres);">
+    <input type="number" name="numberthres" value="55" onchange="act_mynetwork(arr_labels, points_matrix, numberthres.value, matrix_label);">
     <input type="submit" value="Submit">
   </div>
 </form>

@@ -16,7 +16,7 @@ def set_data():
 	matrix, matrix_lavel, raw_paragraph, arr_content = drs.Point_matrix(text, target)
 	data = {
 			"matrix": matrix,
-			"matrix-label": matrix_lavel,
+			"matrix_label": matrix_lavel,
 			"paragraph": raw_paragraph,
 			"content": arr_content
 			}

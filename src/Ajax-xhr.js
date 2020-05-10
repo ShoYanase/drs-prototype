@@ -1,3 +1,4 @@
+/**
 function ajaxSuccess () {
   console.log(this.responseText);
 }
@@ -39,3 +40,4 @@ function AJAXSubmit (oFormElement) {
     }
   }
 }
+**/
