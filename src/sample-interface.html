@@ -17,57 +17,66 @@
     button, input, select, textarea, optgroup {
       font: inherit;
       margin: 0;
+      border: 1px solid #76eec6;
     }
     #mynetwork {
       height: 400px;
       border: 1px solid #76eec6;
       background: #303534;
     }
-    code {
+    #network-array {
+      height: 300px;
+      border: 1px solid #76eec6;
+      background: #303534;
+      white-space: nowrap;
+      overflow-x: auto;
+    }
+    .network{
+      display:inline-block;
+      height: 98%;
+      width: 300px;
+      background: #303534;
+      border: 1px solid #76eec6;
+      padding: 1% 1% 1% 1%;
+      white-space: normal;
+    }
+    .largenetwork{
+      height: 100%;
+      width: 100%;
+      border: 1px solid #76eec6;
+      background: #303534;
+    }
+    .text_in{
       font-size: 14px;
-      background: #575f5d;
+      padding: 10px 15px;
+      width: 100%;
+      border: 1px solid #76eec6;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      box-sizing: border-box;
     }
-    p {
-      max-width: 600px;
+    .text_in:focus{
+      height: 200px;
     }
-    .indented {
-      margin-left: 30px;
-    }
-    .sep {
-      height: 1px;
-      width: 35%;
-      margin-left: 40px;
-      background-color: #dddddd;
-    }
-
-  .text_in{
-    font-size: 14px;
-    padding: 10px 15px;
-    width: 100%;
-    border: 1px solid #76eec6;
-    padding-top: 5px;
-    padding-bottom: 8px;
-    box-sizing: border-box;
-  }
-  .text_in:focus{
-    height: 200px;
-  }
   </style>
   
 </head>
 
 <body>
 
-<div id="mynetwork"></div>
+<div id="mynetwork"　draggable="true" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
 
-<form action="http://127.0.0.1:5000/point_matrix" method="post" onsubmit="AJAXSubmit(this); console.log('ajax response\n',arr_labels, points_matrix, matrix_label); act_mynetwork(arr_labels, points_matrix, numberthres.value, matrix_label); return false;">
+
+<form action="http://127.0.0.1:5000/point_matrix" method="post" onsubmit="AJAXSubmit(this); clearElements('network-array'); act_mynetwork(arr_labels, points_matrix, numberthres.value, matrix_label, flex_threshold_range); return false;">
   <div class="textinput">
     <textarea class="text_in" style="resize:none" placeholder="文章を入力する" name="text_in"></textarea>
-    <input type="number" placeholder="結論の文" name="target"></input>
-    <input type="number" name="numberthres" value="55" onchange="act_mynetwork(arr_labels, points_matrix, numberthres.value, matrix_label);">
+    <input type="number" placeholder="結論の文" value="10" name="target"></input>
+    <input type="number" name="numberthres" value="55" onchange="clearElements('network-array'); act_mynetwork(arr_labels, points_matrix, numberthres.value, matrix_label, flex_threshold_range);">
     <input type="submit" value="Submit">
   </div>
 </form>
+
+<div id="network-array"></div>
 
 </body>
 </html>

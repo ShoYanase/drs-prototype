@@ -252,6 +252,9 @@ def Commonword_addmat(sentences, matsize, df_exeptwords, coef, thres):
   #print(per_mat)
   return points_mat
 
+
+
+
 """# main"""
 print(os.chdir(os.path.dirname(os.path.abspath(__file__))))
 #要素分類
@@ -303,9 +306,16 @@ def Point_matrix(paragraph, target):
   if len_sentence >= target:
     sentences = sentences[:target]
     len_sentence = len(sentences)
-
-  words = [''.join([w for w in [sentence[n][0] for n in range(len(sentence)-1)]]) for sentence in sentences]
-  print(words)
+  
+  words = []
+  i=1  
+  for sentence in sentences:
+    words.append("{"+str(i)+"}. "+''.join([w for w in [sentence[n][0] for n in range(len(sentence)-1)]]))
+    i+=1
+  
+  #w2vモデルのセーブ
+  #wv_model.train(words)
+  #wv_model.save(path_wv_model)
 
   #点数の行列
   points_mat = np.array([[50]*target for i in range(len_sentence)])
@@ -342,9 +352,11 @@ def Point_matrix(paragraph, target):
 
   res_mat = []
   res_label = []
+  i = 0
   for index, row in conjuction_addmat.iterrows():
     res_mat.append(row['matrix'].tolist())
     res_label.append(row['label'])
+    i+=1
   print(res_mat)
   print(res_label)
 
