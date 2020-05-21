@@ -167,28 +167,48 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_,threshold_range){
     return new vis.Network(container, data, options);
   }
 
-  /**ダブルクリックでエッジ確定 */
-  main_network.on("doubleClick", function(params){
+  eventEdgeDblclicled(main_network);
+}
+
+/**ダブルクリックでエッジ確定 */
+function eventEdgeDblclicled(network){
+  network.on("doubleClick", function(params){
     console.log("dblclickevent");
     if (params.edges.length == 1) {
       let edgeId = params.edges[0];
       console.log('エッジ'+edgeId + 'がダブルクリックされました');
-
-      nodeIds = edgeId.split('-');
-      if(Array.isArray(matrix_[0])){
-          var selectedEdgePoint = points_matrix[0][nodeIds[0]][nodeIds[1]];
-      }else{var selectedEdgePoint = points_matrix[nodeIds[0]][nodeIds[1]];}
-      selectedEdgeId = {edgeId: selectedEdgePoint};
-      clearElements('network-array');
-      act_mynetwork(labels_, points_matrix, (selectedEdgePoint+flex_threshold_range[1])/2, mat_label_,[selectedEdgePoint, flex_threshold_range[1]]);
+      let j = 0;
+      for(let i in network_arr){
+        let edge_isexist = network_arr[i].getClusteredEdges(edgeId).length;
+        console.log(edge_isexist);
+        console.log(i);
+        if(i != 'NaN'){
+          if(!edge_isexist){
+            clearSingleElement('network-array', j);
+            network_arr[i].destroy();
+            delete network_arr[i];
+            j--;
+          }
+          j++;
+        }
+      }
     }
   });
 }
 
+/**HTMLの要素 子配列を初期化 */
 function clearElements(elid){
   var element = document.getElementById(elid);
   while (element.firstChild) {
     element.removeChild(element.firstChild);
+  }
+}
+/**HTMLの要素 任意の子を削除 */
+function clearSingleElement(elid, index){
+  var element = document.getElementById(elid);
+  console.log(element.childNodes.item(index));
+  if(element.childNodes.item(index)){
+    element.removeChild(element.childNodes.item(index));
   }
 }
 
@@ -265,7 +285,10 @@ const drop = (event) => {
   let drop_target = event.target;
   let drag_target_id = event.dataTransfer.getData('target_id');
   main_network = network_arr[drag_target_id];
+
   console.log(main_network)
+  eventEdgeDblclicled(main_network);
+
   let drag_target = document.getElementById(drag_target_id);
   let cl_tmp = drop_target.className;
   drop_target.className = drag_target.className;
