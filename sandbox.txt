@@ -1,1 +1,22 @@
-図26、図27より、バッファサイズが大きくなる程実行時間が短くなることがわかる.さらに、それぞれの近似曲線より、バッファサイズをx、実行時間をyとすると、両者の関係はy=a/x(aはある特定の定数)という方程式で近似的に表せることができ、実行時間はバッファサイズに反比例していることがわかる.また図27より、read、writeによる実装よりも、fread、fwriteによる実装の方が実行時間が速いことがわかる.実行時間がバッファサイズに反比例したのは、次のような理由が考えられる.cでは、ファイルの内容がバッファサイズごとに読み取り・書き込みが行われる.その処理の回数はバッファサイズに反比例する.よって読み取り・書き込みの回数が増えることによって実行時間が増えると考えられる.read、writeによる実装よりも、fread、fwriteによる実装の方が実行時間が速いのには、以下のような理由が考えられる.cは、両者とも同じバッファサイズで実行しているが、システムコールread、write関数の呼び出し回数が大きく違う.これによって両者の実行時間の違いが出ていると考えられる.
+図26、図27より、バッファサイズが大きくなる程実行時間が短くなることがわかる。さらに、それぞれの近似曲線より、バッファサイズをx、実行時間をyとすると、両者の関係はy=a/x(aはある特定の定数)という方程式で近似的に表せることができ、実行時間はバッファサイズに反比例していることがわかる。また図27より、read、writeによる実装よりも、fread、fwriteによる実装の方が実行時間が速いことがわかる。実行時間がバッファサイズに反比例したのは、次のような理由が考えられる。cでは、ファイルの内容がバッファサイズごとに読み取り・書き込みが行われる。その処理の回数はバッファサイズに反比例する。よって読み取り・書き込みの回数が増えることによって実行時間が増えると考えられる。read、writeによる実装よりも、fread、fwriteによる実装の方が実行時間が速いのには、以下のような理由が考えられる。cは、両者とも同じバッファサイズで実行しているが、システムコールread、write関数の呼び出し回数が大きく違う。これによって両者の実行時間の違いが出ていると考えられる。
+
+
+  //ダブルクリックでもスワップ
+  $(document).on("dblclick", '.network', function (e) {
+    console.log("network dbclk");
+    let targetId = e.target.id;
+    console.log(e.target);
+    main_network = network_arr[targetId];
+    eventEdgeDblclicled(main_network);
+    let targetEl = document.getElementById(targetId);
+    let mainEl = document.getElementById("mynetwork");
+    let cl_tmp = mainEl.className;
+    mainEl.className = targetEl.className;
+    targetEl.className = cl_tmp;
+
+    let tmp = document.createElement('div');
+    mainEl.before(tmp);
+    tmp.replaceWith(taegetEl);
+    enableDrag(mainEl);
+    enableDrag(targetEl);
+  });

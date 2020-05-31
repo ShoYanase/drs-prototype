@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+  <title>DocumentReviewSupporter | prototype</title>
+  <script type="text/javascript" src="https://unpkg.com/vis-network@7.5.2/standalone/umd/vis-network.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="Ajax-xhr.js"></script>
+  <script type="text/javascript" src="multi-network.js"></script>
+  <script type="text/javascript" src="drug-drop.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css"/>
+  <link rel="stylesheet" type="text/css" href="content.css"/>
+
+</head>
+
+<body>
+  <header>
+    <a class="logo">Document Review Supporter</a>
+  </header>
+
+  <div id="sentences-array"></div>
+  <div id="mynetwork"　draggable="true" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+
+  <form id="subform" onsubmit="AJAXSubmit(this); return false;">
+    <input class="splitbutton" id="spbutton" type="button" value="SPLIT" onclick="console.log('split'); AJAXSubmit_notform({text_in : document.getElementById('text-input').value})"></input>
+    <div class="textinput">
+      <textarea id="text-input" class="text_in" style="resize:none" placeholder="文章を入力する" name="text_in"></textarea>
+    </div>
+    <div class="number-inputarea">
+      <div class="target_in">
+        <label id="lbltarget" for="target">結論の文</label><br>
+        <input id="target" type="number" placeholder="結論の文" value="10" name="target"></input>
+      </div>
+      <div class="thres_in">
+        <label id="lblthres" for="numberthres">閾値</label><br>
+        <input id="numberthres" type="number" placeholder="閾値" name="numberthres" value="55" onchange="clearElements('network-array'); act_mynetwork(arr_labels, points_matrix, numberthres.value, matrix_label, flex_threshold_range, contents); return false;"></input>
+      </div>
+      <input class="subbutton" type="submit" value="SUBMIT"></input>
+    </div>
+
+    
+  </form>
+
+  <div id="network-array"></div>
+
+</body>
+</html>

@@ -16,7 +16,8 @@ import pandas as pd
 import numpy as np
 import re
 import os
-import tensorflow as tf
+import copy
+#import tensorflow as tf
 import pprint
 
 import MeCab
@@ -35,7 +36,9 @@ from joblib import dump,load
 """
 #文章を文単位で分割
 def parse_Paragraph(paragraph):
-  sentences = re.split('. |。|．|\.', paragraph)
+  if not re.match('.*[。|．]', paragraph):
+    paragraph = paragraph+'。'
+  sentences = re.split('。|．', paragraph)
   sentences = [re.sub(',|，', '、',s) for s in sentences]
   res = [s+'。' for s in sentences][:-1]
   return res
@@ -62,7 +65,15 @@ def pca_vec(vec):
 
 """### mecabの分かち書きからベクトル生成"""
 def make_vec(sentence, wv_model):
-  vec = np.array([wv_model.wv[w] for w in [sentence[n][0] for n in range(len(sentence)-1)]])
+  words = []
+  for n in range(len(sentence)-1):
+    for w in [sentence[n][0]]:
+      try:
+        words.append(wv_model.wv[w])
+      except KeyError:
+        print(w,"was not in vocabulary. And ignored.")
+  vec = np.array(words)
+  #vec = np.array([wv_model.wv[w] for w in [sentence[n][0] for n in range(len(sentence)-1)]])
   return pca_vec(vec)
 
 """### Prediction"""
@@ -87,6 +98,8 @@ def Content_Classification(paragraph, wv_model, sentence_attr_model):
 """### 加点行列をつくる"""
 
 def Content_addmat(arr_content, matsize, df_Content_points):
+  if len(arr_content) > matsize:
+    arr_content = arr_content[:matsize]
   points_mat = np.zeros((matsize, matsize), dtype=int)
   for i in range(matsize):
     for j in range(i+1, matsize):
@@ -102,6 +115,7 @@ def Content_addmat(arr_content, matsize, df_Content_points):
 
 def search_Conjuction(df_attr, sentence):
   if '接続詞' in sentence[0][3]:
+    print("setuzokusi")
     query = 'word == \"'+sentence[0][0]+'\"'
     arr_attr = df_attr.query(query)
     #print(sentence[0][0]," is ", arr_attr["attr"].tolist())
@@ -273,8 +287,8 @@ wv_model = load(path_wv_model)
 path_Conjuction_attr =  "../data/data_prot/Rules/Conjuction_attr.csv"
 path_Conjuction_points =  "../data/data_prot/Rules/Conjuction_points.csv"
 ##山本 和英, 齋藤 真実の分類
-path_Conjuction_attr_yamamoto =  "../data/data_prot/Yamamoto_Rules/Conjuction_attr.csv"
-path_Conjuction_points_yamamoto =  "../data/data_prot/Yamamoto_Rules/Conjuction_points.csv"
+#path_Conjuction_attr_yamamoto =  "../data/data_prot/Yamamoto_Rules/Conjuction_attr.csv"
+#path_Conjuction_points_yamamoto =  "../data/data_prot/Yamamoto_Rules/Conjuction_points.csv"
 df_conjuction_attr = pd.read_csv(path_Conjuction_attr)
 df_conjuction_points = pd.read_csv(path_Conjuction_points)
 
@@ -298,27 +312,40 @@ commonwords_thres = 0.5
 
 #生の文章(paragraph)と結論の位置(target)から点数を出す
 def Point_matrix(paragraph, target):
+
+  def Reshape_sentence(sentences):
+    words = []
+    i=1  
+    for sentence in sentences:
+      words.append(""+str(i)+". "+''.join([w for w in [sentence[n][0] for n in range(len(sentence)-1)]]))
+      i+=1
+    return words
+
+  print(paragraph, target)
+
   #文を分かち書き
   sentences = parse_Parag_to_Word(paragraph)
   len_sentence = len(sentences)
-  
+  if target == -1:
+    return [], [], [], [], Reshape_sentence(sentences)
+
   #文章の頭から指定の文まで抜き出し
+  sentence_full = copy.copy(sentences)
   if len_sentence >= target:
-    sentences = sentences[:target]
+    sentences_ = sentences[:target]
     len_sentence = len(sentences)
+  elif target > len_sentence:
+    sentences_ = sentences
+    target = len_sentence
   
-  words = []
-  i=1  
-  for sentence in sentences:
-    words.append("{"+str(i)+"}. "+''.join([w for w in [sentence[n][0] for n in range(len(sentence)-1)]]))
-    i+=1
-  
-  #w2vモデルのセーブ
-  #wv_model.train(words)
-  #wv_model.save(path_wv_model)
+  words = Reshape_sentence(sentences_)
+  sentence_full = Reshape_sentence(sentence_full)
+
+  #w2vモデルの再訓練/セーブ
+  #wv_model.train(words, total_examples = sum([len(w) for w in words]), epochs = wv_model.iter)
 
   #点数の行列
-  points_mat = np.array([[50]*target for i in range(len_sentence)])
+  points_mat = np.array([[50]*target for i in range(target)])
 
   #要素分類
   #print("---------------要素分類------------------------------------------------")
@@ -331,22 +358,22 @@ def Point_matrix(paragraph, target):
 
   #指示代名詞
   #print("---------------指示代名詞------------------------------------------------")
-  directive_addmat = Directive_addmat(sentences, target, directive_point)
+  directive_addmat = Directive_addmat(sentences_, target, directive_point)
   points_mat += directive_addmat
   
   #他キーワード
   #print("---------------キーワード------------------------------------------------")
-  keyword_addmat = Keyword_addmat(sentences, target, df_keywords)
+  keyword_addmat = Keyword_addmat(sentences_, target, df_keywords)
   points_mat += keyword_addmat
 
   #共通の単語
   #print("---------------共通の単語------------------------------------------------")
-  commonword_addmat = Commonword_addmat(sentences, target, df_exeptwords, commonwords_coef, commonwords_thres)
+  commonword_addmat = Commonword_addmat(sentences_, target, df_exeptwords, commonwords_coef, commonwords_thres)
   points_mat += commonword_addmat
 
   #接続詞の加点行列
   #print("---------------接続詞------------------------------------------------")
-  conjuction_addmat = Paragraph_to_Conjuction_addmat(df_conjuction_attr, df_conjuction_points, sentences, arr_content)
+  conjuction_addmat = Paragraph_to_Conjuction_addmat(df_conjuction_attr, df_conjuction_points, sentences_, arr_content)
   conjuction_addmat['matrix'] = conjuction_addmat['matrix'].map(lambda x: x + points_mat)
   #print("---------------------------------------------------------------------")
 
@@ -357,9 +384,6 @@ def Point_matrix(paragraph, target):
     res_mat.append(row['matrix'].tolist())
     res_label.append(row['label'])
     i+=1
-  print(res_mat)
-  print(res_label)
+ 
 
-  return res_mat, res_label, words, arr_content
-
-Point_matrix("図26、図27より、バッファサイズが大きくなる程実行時間が短くなることがわかる.さらに、それぞれの近似曲線より、バッファサイズをx、実行時間をyとすると、両者の関係はy=a/x(aはある特定の定数)という方程式で近似的に表せることができ、実行時間はバッファサイズに反比例していることがわかる.また図27より、read、writeによる実装よりも、fread、fwriteによる実装の方が実行時間が速いことがわかる.実行時間がバッファサイズに反比例したのは、次のような理由が考えられる.cでは、ファイルの内容がバッファサイズごとに読み取り・書き込みが行われる.その処理の回数はバッファサイズに反比例する.よって読み取り・書き込みの回数が増えることによって実行時間が増えると考えられる.read、writeによる実装よりも、fread、fwriteによる実装の方が実行時間が速いのには、以下のような理由が考えられる.cは、両者とも同じバッファサイズで実行しているが、システムコールread、write関数の呼び出し回数が大きく違う.これによって両者の実行時間の違いが出ていると考えられる.", 4)
+  return res_mat, res_label, words, arr_content, sentence_full
