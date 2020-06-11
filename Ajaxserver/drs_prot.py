@@ -39,7 +39,7 @@ def parse_Paragraph(paragraph):
   if not re.match('.*[。|．]', paragraph):
     paragraph = paragraph+'。'
   sentences = re.split('。|．', paragraph)
-  sentences = [re.sub(',|，', '、',s) for s in sentences]
+  #sentences = [re.sub(',|, |，', '、',s) for s in sentences]
   res = [s+'。' for s in sentences][:-1]
   return res
 

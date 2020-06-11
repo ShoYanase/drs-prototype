@@ -84,9 +84,10 @@ function generatefromReq(req){
     contents = obj.content;
     sentences_full = obj.sentences_full;
     console.log(sentences_full);
+    let thres = $('#numberthres').val();
     clearElements('network-array');
     clearElements('sentences-array');
     appendSentences(sentences_full);
-    act_mynetwork(arr_labels, points_matrix, numberthres.value, matrix_label, flex_threshold_range, contents);
+    act_mynetwork(arr_labels, points_matrix, thres, matrix_label, flex_threshold_range, contents);
   }
 }

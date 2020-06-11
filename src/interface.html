@@ -20,7 +20,8 @@
   </header>
 
   <div id="sentences-array"></div>
-  <div id="mynetwork"　draggable="true" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+  <div id="mynetwork"　draggable="false" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)">
+  </div>
 
   <form id="subform" onsubmit="AJAXSubmit(this); return false;">
     <input class="splitbutton" id="spbutton" type="button" value="SPLIT" onclick="console.log('split'); AJAXSubmit_notform({text_in : document.getElementById('text-input').value})"></input>

@@ -1,7 +1,7 @@
-function enableDrag(el){
+  function enableDrag(el){
     if(el.className == 'network'){
       //console.log("drag enable");
-      el.setAttribute('draggable','true');
+      el.setAttribute('draggable','faise'/**('true') */);
       el.setAttribute('ondragstart','drag(event)');
       el.setAttribute('ondragover','allowDrop(event)');
       el.setAttribute('ondrop','drop(event)');
@@ -45,7 +45,32 @@ function enableDrag(el){
     enableDrag(drag_target);
   }
   
+  /**
   $('.network').on("drop dragover", function (e) {
     e.stopPropagation();
     e.preventDefault();
   });
+*/
+
+  //ダブルクリックでもスワップ
+
+  $(document).on("dblclick", '.network > .vis-network', function (e) {
+    console.log("network dbclk");
+    console.log(e.target.parentNode.parentNode);
+    e.target.parentNode.parentNode.remove();
+    
+    let targetId = e.target.id;
+    let mainEl = $("#mynetwork > .vis-network");
+    
+    mainEl.replaceWith($(e.currentTarget));
+    main_network = network_arr[targetId];
+    eventEdgeDblclicled(main_network);
+  });
+
+  function deleteEdgeAction(container){
+    main_network.on('click', function(e){
+      if(container.getElementsByClassName('vis-button vis-delete').length > 0){
+        console.log("vis-delete exist");
+      }
+    })
+  }
