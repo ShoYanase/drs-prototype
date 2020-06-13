@@ -87,7 +87,9 @@ class ExpandingDiv extends HTMLDivElement{
 var network_arr = {};
 var selectedEdgeId = {};
 function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, content_){
-  let maincontainer = document.getElementById('mynetwork');
+  $('#network-array').addClass('active');
+  $('#network-array-button').addClass('active');
+  maincontainer = document.getElementById('mynetwork');
   
   maincontainer.setAttribute('ondragover','allowDrop(event)');
   maincontainer.setAttribute('ondrop','drop(event)');
@@ -135,30 +137,6 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
     });
   }
 
-  function editedEdgeOptions(network){
-    network.on('animationFinished', function(e){
-      console.log(e);
-      network.setOptions({
-        edges: {
-          font: {
-            size: 16
-          },
-          widthConstraint: {
-            maximum: node_maxwidth
-          },
-          color: '#76eec6',
-          arrows: {
-              to:{
-                  enabled: true,
-                  type: 'arrow'
-              }
-          }
-        }
-      });
-    });
-  }
-
-
   function visNetwork(labels, matrix, thres, mat_label, container, height, width, cont) {
     //console.log("visNetwork",mat_label+"\nthres "+thres);
     let parag_len = labels.length;
@@ -175,7 +153,7 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
           enabled: true,
           direction: "UD",
           sortMethod: "directed",
-          levelSeparation: node_maxheight +10,
+          levelSeparation: node_maxheight +20,
           nodeSpacing: node_maxwidth
         }
       },
@@ -208,28 +186,37 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
       },
       physics: {
         enabled: true,
+        hierarchicalRepulsion:{
+          nodeDistance: 9999,
+          centralGravity: 0,
+          springLength: 1000,
+          springConstant: 0
+        }
       },
       manipulation: {
-        enabled: true,
+        enabled: false,
         addEdge: function (data, callback) {
+          //data.id = String(data.from)+"-"+String(data.to), idが重複するとエラーなる
           data.label = String(matrix[data.from][data.to]),
-            data.color = '#ffffff',
-            data.arrows = {
-              to: {
-                enabled: true,
-                type: 'arrow'
-              }
-            };
+          data.color = '#ffffff',
+          data.arrows = {
+            to: {
+              enabled: true,
+              type: 'arrow'
+            }
+          };
           callback(data);
         }
       }
     };
-    console.log(Array.from({length: parag_len}, (v, i) => i+1));
+    //console.log(Array.from({length: parag_len}, (v, i) => i+1));
     return new vis.Network(container, data, options);
   }
   disableHierarchy(main_network);
   eventEdgeDblclicled(main_network);
   deleteEdgeAction(maincontainer);
+  editEdgeMode();
+
 }
 
 /**ダブルクリックでエッジ確定*/
@@ -245,8 +232,6 @@ function eventEdgeDblclicled(network){
       let index_destroy = -1;
       for(let index_network in network_arr){
         let edge_isexist = network_arr[index_network].getClusteredEdges(edgeId).length;
-        //console.log(edge_isexist);
-        //console.log(index_network);
         if(index_network != 'NaN'){
           if(!edge_isexist){
             clearSingleElement('network-array', index_destroy);
@@ -271,7 +256,7 @@ function appendSentences(sentences){
     $('#sentences-array > button').on('click', function(){
       //console.log("_text_display_child clicked")
       let id = $(this).attr('id');
-      console.log("text_display_child clicked"+id);
+      //console.log("text_display_child clicked"+id);
       $('#target').attr('value', id);
       main_network.selectNodes([id]);
     });
@@ -293,3 +278,9 @@ function clearSingleElement(elid, index){
     element.removeChild(element.childNodes.item(index));
   }
 }
+
+//$('#network-array-button').on('click', function(){
+//  console.log('button click');
+//  $('#network-array').toggleClass('active');
+//  $('#network-array-button').toggleClass('active');
+//});

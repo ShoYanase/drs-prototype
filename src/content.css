@@ -1,39 +1,75 @@
 #mynetwork {
   margin-top: 27px;
   margin-bottom: 2px;
-  height: 400px;
+  min-height: 600px;
+  height: 600px;
+  resize: vertical;
   width: 79%;
   float: right;
   border: 1px solid var(--dark-border-color);
   background: #303534;
-  white-space: normal;
-  overflow-x: auto;
   font-family: consolas;
 }
 .network{
   display:inline-block;
-  height: 98%;
-  width: 300px;
+  height: 300px;
+  width: 98%;
   background: #303534;
-  border: 1px solid #575f5d;
+  border: 2px solid #575f5d;
   padding: 1% 1% 1% 1%;
   white-space: normal;
   font-family: consolas;
 }
-#network-array {
-  height: 300px;
-  margin-top: 1px;
-  border: 1px solid var(--dark-border-color);
+
+#network-array-button{
+  position: absolute;
+  top: 40px;
+  right: 15px;
+  width: 30px;
+  height:30px;
+  border-radius: 50%;
+  background-image: url(https://icongr.am/clarity/ellipsis-vertical.svg?size=30&color=FFFFFF);
+  transition: 0.1s;
+  cursor: pointer;
+}
+#network-array-button.active{
+  position: absolute;
+  top: 6px;
+  right: 264px;
+  width: 30px;
+  height:30px;
+  border-radius: 50%;
+  background-image: url(https://icongr.am/clarity/close.svg?size=30&color=FFFFFF);
+  transition: 0.1s;
+  cursor: pointer;
+}
+
+#network-array{
+  width: 0px;
+  height: 100%;
+  position: absolute;
+  top: 0%;
+  right: -310px;
+  transition: 0.1s;
+}
+#network-array.active {
+  width: 300px;
+  height: 100%;
+  position: absolute;
+  box-shadow: 0 0 10px #000000;
+  top: 0%;
+  right: 0%;
   background: #303534;
-  white-space: nowrap;
   overflow-x: auto;
   font-family: consolas;
+  transition: 0.1s;
 }
 #sentences-array {
   margin-top: 27px;
   margin-bottom: 2px;
-  height: 400px;
+  height: 600px;
   width: 20%;
+  
   border: 1px solid var(--dark-border-color);
   background: #303534;
   white-space: normal;
@@ -119,4 +155,34 @@
 .subbutton{
   height: 40px;
   width: 80px;
+  cursor: pointer;
+}
+.editbutton {
+  position: relative;
+  text-align: center;
+  font-size: 10px;
+  float: right;
+  height: 15px;
+  width: 21%;
+  display: inline-block;
+  margin: 0px 2px 0px 2px;
+  border-radius: 25px;
+  border: 1px solid var(--dark-border-color);
+  color: black;
+  font-family: consolas;
+  background-image: linear-gradient(180deg, white,white);
+  cursor: pointer;
+}
+.splitbutton{
+  cursor: pointer;
+}
+
+.editbutton:hover{
+  background-image: linear-gradient(180deg, rgb(219, 219, 219),rgb(219, 219, 219));
+}
+.splitbutton:hover{
+  background-image: linear-gradient(180deg, rgb(219, 219, 219),rgb(219, 219, 219));
+}
+.subbutton:hover{
+  background-image: linear-gradient(180deg, rgb(219, 219, 219),rgb(219, 219, 219));
 }

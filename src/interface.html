@@ -18,10 +18,12 @@
   <header>
     <a class="logo">Document Review Supporter</a>
   </header>
-
+  
   <div id="sentences-array"></div>
-  <div id="mynetwork"　draggable="false" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)">
-  </div>
+  <div id="mynetwork"　draggable="false" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+
+  <div id="edit-button" class="editbutton" type="button" value="">Add Edge</div>
+  <div id="delete-button" class="editbutton" type="button" value="">Delete Edge</div>
 
   <form id="subform" onsubmit="AJAXSubmit(this); return false;">
     <input class="splitbutton" id="spbutton" type="button" value="SPLIT" onclick="console.log('split'); AJAXSubmit_notform({text_in : document.getElementById('text-input').value})"></input>
@@ -42,8 +44,12 @@
 
     
   </form>
-
+  
+  
   <div id="network-array"></div>
+  <div id="network-array-button" type="button" onclick="  console.log('button click');
+  $('#network-array').toggleClass('active');
+  $('#network-array-button').toggleClass('active');"></input>
 
 </body>
 </html>
