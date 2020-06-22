@@ -26,7 +26,7 @@
   <div id="delete-button" class="editbutton" type="button" value="">Delete Edge</div>
 
   <form id="subform" onsubmit="AJAXSubmit(this); return false;">
-    <input class="splitbutton" id="spbutton" type="button" value="SPLIT" onclick="console.log('split'); AJAXSubmit_notform({text_in : document.getElementById('text-input').value})"></input>
+    <input class="splitbutton" id="spbutton" type="button" value="SPLIT" onclick=" AJAXSubmit_notform({text_in : document.getElementById('text-input').value})"></input>
     <div class="textinput">
       <textarea id="text-input" class="text_in" style="resize:none" placeholder="文章を入力する" name="text_in"></textarea>
     </div>

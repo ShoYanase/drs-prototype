@@ -46,29 +46,32 @@ function make_nodes(parag_len, labels, cont){
 
 function make_edges(matrix, thres){
   if(typeof matrix == "number"){return [];}
-  //console.log(matrix, thres)
+  //console.log(matrix, thres);
     parag_len = matrix.length;
     var arr_edges = new Array();
     for(let i=0; i<parag_len; i++){
-        for(let j=i+1; j<parag_len; j++){
-            if(matrix[i][j] >= thres){
-              //console.log("edges "+i+j);
-                arr_edges.push({
-                    id: i+"-"+j,
-                    from: i+1, 
-                    to: j+1, 
-                    label: String(matrix[i][j]),
-                    font: {size: 16},
-                    color: '#ffffff',
-                    arrows: {
-                        to:{
-                            enabled: true,
-                            type: 'arrow'
-                        }
-                    }
-                });
+      let edgecount = 0;
+      for(let j=i+1; j<parag_len; j++){
+        if(matrix[i][j] >= thres){
+          //console.log("edges "+i+j);
+          arr_edges.push({
+            id: i+"-"+j,
+            from: i+1, 
+            to: j+1, 
+            label: String(matrix[i][j]),
+            font: {size: 16},
+            color: '#ffffff',
+            arrows: {
+              to:{
+                enabled: true,
+                type: 'arrow'
+              }
             }
+          });
+          edgecount++;
         }
+        if(edgecount>1){break;}
+      }
     }
     return arr_edges;
 }
@@ -84,9 +87,13 @@ class ExpandingDiv extends HTMLDivElement{
   }
 }customElements.define('expanding-div', ExpandingDiv, { extends: 'div' });
 
-var network_arr = {};
+main_network = undefined;
+network_arr = {};
 var selectedEdgeId = {};
 function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, content_){
+  resetNetworkEvents();
+  deleted_network = {};
+  
   $('#network-array').addClass('active');
   $('#network-array-button').addClass('active');
   maincontainer = document.getElementById('mynetwork');
@@ -109,6 +116,8 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
       //editedEdgeOptions(network);
       container_boxarr.appendChild(el);
       network_arr[mat_label_[0]+j] = network;
+      eventEdgeDblclicled(network);
+      //editEdgeMode(network);
     }
 
     for(let i=1;i<matarr_len;i++){
@@ -120,9 +129,13 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
         //editedEdgeOptions(network);
         container_boxarr.appendChild(el);
         network_arr[mat_label_[i]+j] = network;
+        eventEdgeDblclicled(network);
+        //editEdgeMode(network);
       }
     }
-  } else {main_network = visNetwork(labels_, matrix_, thres_, mat_label_, maincontainer, '100%', '100%', content_);}
+  } else {
+    main_network = visNetwork(labels_, matrix_, thres_, mat_label_, maincontainer, '100%', '100%', content_);
+  }
 
   function disableHierarchy(network){
     network.on('startStabilizing', function(e){
@@ -197,7 +210,7 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
         enabled: false,
         addEdge: function (data, callback) {
           //data.id = String(data.from)+"-"+String(data.to), idが重複するとエラーなる
-          data.label = String(matrix[data.from][data.to]),
+          data.label = String(matrix[data.from-1][data.to-1]),
           data.color = '#ffffff',
           data.arrows = {
             to: {
@@ -212,11 +225,17 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
     //console.log(Array.from({length: parag_len}, (v, i) => i+1));
     return new vis.Network(container, data, options);
   }
+  //console.log(main_network);
+  //console.log(network_arr);
   disableHierarchy(main_network);
   eventEdgeDblclicled(main_network);
-  deleteEdgeAction(maincontainer);
+  deleteEdgeAction();
   editEdgeMode();
+}
 
+function resetNetworkEvents(){
+  $('#delete-button').off('click',);
+  $('#edit-button').off('click',);
 }
 
 /**ダブルクリックでエッジ確定*/
