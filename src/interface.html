@@ -9,6 +9,7 @@
   <script type="text/javascript" src="Ajax-xhr.js"></script>
   <script type="text/javascript" src="multi-network.js"></script>
   <script type="text/javascript" src="drug-drop.js"></script>
+  <script type="text/javascript" src="Undo-Redo.js"></script>
   <link rel="stylesheet" type="text/css" href="style.css"/>
   <link rel="stylesheet" type="text/css" href="content.css"/>
 
@@ -18,7 +19,7 @@
   <header>
     <a class="logo">Document Review Supporter</a>
   </header>
-  
+
   <div id="sentences-array"></div>
   <div id="mynetwork"　draggable="false" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
 
@@ -49,7 +50,9 @@
   <div id="network-array"></div>
   <div id="network-array-button" type="button" onclick="  console.log('button click');
   $('#network-array').toggleClass('active');
-  $('#network-array-button').toggleClass('active');"></input>
+  $('#network-array-button').toggleClass('active');"></div>
+  <div id="undo-button" class="undobutton" type="button" onclick="console.log('undobutton');UndoAction();"></div>
+  <div id="redo-button" class="redobutton" type="button" onclick="console.log('redobutton');RedoAction();"></div>
 
 </body>
 </html>

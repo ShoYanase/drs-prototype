@@ -15,8 +15,12 @@ matrix_label = [];
 /**let parag_len = arr_labels.length;
  */
 
-var node_maxwidth = 250
-var node_maxheight = 90
+main_network = undefined;
+network_arr = {};
+
+network_options = {};
+var node_maxwidth = 250;
+var node_maxheight = 90;
 
 var flex_threshold_range = [45, 65];
 var numberthres = (flex_threshold_range[0]+flex_threshold_range[1])/2;
@@ -87,8 +91,6 @@ class ExpandingDiv extends HTMLDivElement{
   }
 }customElements.define('expanding-div', ExpandingDiv, { extends: 'div' });
 
-main_network = undefined;
-network_arr = {};
 var selectedEdgeId = {};
 function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, content_){
   resetNetworkEvents();
@@ -137,18 +139,6 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
     main_network = visNetwork(labels_, matrix_, thres_, mat_label_, maincontainer, '100%', '100%', content_);
   }
 
-  function disableHierarchy(network){
-    network.on('startStabilizing', function(e){
-      network.setOptions({
-        layout:{
-          hierarchical: false
-        },
-        physics:{
-          enabled: false
-        }
-      });
-    });
-  }
 
   function visNetwork(labels, matrix, thres, mat_label, container, height, width, cont) {
     //console.log("visNetwork",mat_label+"\nthres "+thres);
@@ -157,7 +147,7 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
       nodes: make_nodes(parag_len, labels, cont),
       edges: make_edges(matrix, thres)
     };
-    var options = {
+    network_options = {
       autoResize: true,
       height: height,
       width: width,
@@ -199,31 +189,26 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
       },
       physics: {
         enabled: true,
+        ///***
         hierarchicalRepulsion:{
-          nodeDistance: 9999,
-          centralGravity: 0,
-          springLength: 1000,
-          springConstant: 0
+          nodeDistance: 50,
+          springLength: 150,
+          damping: 1.0
+        },
+        repulsion:{
+          damping: 1.0
         }
+        // */
       },
       manipulation: {
         enabled: false,
         addEdge: function (data, callback) {
-          //data.id = String(data.from)+"-"+String(data.to), idが重複するとエラーなる
-          data.label = String(matrix[data.from-1][data.to-1]),
-          data.color = '#ffffff',
-          data.arrows = {
-            to: {
-              enabled: true,
-              type: 'arrow'
-            }
-          };
-          callback(data);
+          AddEdgeFunc(data, callback);
         }
       }
     };
     //console.log(Array.from({length: parag_len}, (v, i) => i+1));
-    return new vis.Network(container, data, options);
+    return new vis.Network(container, data, network_options);
   }
   //console.log(main_network);
   //console.log(network_arr);
@@ -233,34 +218,22 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
   editEdgeMode();
 }
 
+function disableHierarchy(network){
+  network.on('startStabilizing', function(e){
+    network.setOptions({
+      layout:{
+        hierarchical: false
+      },
+      physics:{
+        enabled: false
+      }
+    });
+  });
+}
+
 function resetNetworkEvents(){
   $('#delete-button').off('click',);
   $('#edit-button').off('click',);
-}
-
-/**ダブルクリックでエッジ確定*/
-function eventEdgeDblclicled(network){
-  network.on("doubleClick", function(params){
-    //console.log("dblclickevent");
-    if (params.edges.length == 1) {
-      let edgeId = params.edges[0];
-      //console.log('エッジ'+edgeId + 'がダブルクリックされました');
-
-      /**network.setData({edges: {id: edgeId,color: {color: '#29f6b2'}}});*/
-
-      let index_destroy = -1;
-      for(let index_network in network_arr){
-        let edge_isexist = network_arr[index_network].getClusteredEdges(edgeId).length;
-        if(index_network != 'NaN'){
-          if(!edge_isexist){
-            clearSingleElement('network-array', index_destroy);
-            index_destroy--;
-          }
-        }
-        index_destroy++;
-      }
-    }
-  });
 }
 
 function appendSentences(sentences){
