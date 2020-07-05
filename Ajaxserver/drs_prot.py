@@ -36,9 +36,9 @@ from joblib import dump,load
 """
 #文章を文単位で分割
 def parse_Paragraph(paragraph):
-  if not re.match('.*[。|．]', paragraph):
+  if not re.match('.*[。|．|\. ]', paragraph):
     paragraph = paragraph+'。'
-  sentences = re.split('。|．', paragraph)
+  sentences = re.split('。|．|\. ', paragraph)
   #sentences = [re.sub(',|, |，', '、',s) for s in sentences]
   res = [s+'。' for s in sentences][:-1]
   return res

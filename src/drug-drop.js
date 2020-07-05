@@ -116,6 +116,10 @@
         enabled: true,
         ///***
         hierarchicalRepulsion:{
+          centralGravity: 0.0,
+          springLength: 500,
+          springConstant: 0.01,
+
           nodeDistance: 50,
           springLength: 150,
           damping: 1.0
@@ -182,16 +186,16 @@
           console.log(index_network, edge_isexist, index_destroy);
           if(index_network != 'NaN'){
             if(edge_isexist > 0){
+              deleted_network_id.push(index_network);
               clearSingleElement('network-array', index_destroy);
-              deleted_network[index_network] = network_arr[index_network];
-              delete network_arr.index_network;
               index_destroy--;
             }
           }
           index_destroy++;
           buf.push(index_destroy);
         }
-        main_network.updateEdge(edgeId, {id: undefined, hidden: true});
+        main_network.updateEdge(edgeId, {hidden: true});
+        deleted_edge_id.push(edgeId);
       }
       deleted_network_place.push(buf);
     });
@@ -217,6 +221,7 @@
           let edge_isexist = network_arr[index_network].getClusteredEdges(edgeId).length;
           if(index_network != 'NaN'){
             if(!edge_isexist){
+              deleted_network_id.push(index_network);
               clearSingleElement('network-array', index_destroy);
               index_destroy--;
             }

@@ -189,8 +189,11 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
       },
       physics: {
         enabled: true,
-        ///***
         hierarchicalRepulsion:{
+          centralGravity: 0.0,
+          springLength: 500,
+          springConstant: 0.01,
+
           nodeDistance: 50,
           springLength: 150,
           damping: 1.0
@@ -198,7 +201,6 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
         repulsion:{
           damping: 1.0
         }
-        // */
       },
       manipulation: {
         enabled: false,
