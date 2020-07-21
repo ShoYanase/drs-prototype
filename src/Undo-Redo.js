@@ -18,6 +18,14 @@ $('#undo-button').on('click', function(e){
   UndoAction();
 });
 */
+$(window).keydown(function(e){
+  if(event.ctrlKey){
+    if(e.keyCode === 90){
+      UndoAction();
+      return false;
+    }
+  }
+});
 
 function UndoAction(){
   console.log("UndoAction",action_history);
@@ -146,6 +154,7 @@ function UndoAction(){
     main_network = new vis.Network(maincontainer, replaced_data, network_options);
     disableHierarchy(main_network);
     eventEdgeDblclicled(main_network);
+    NetworkContext();
     deleteEdgeAction();
     editEdgeMode();
   }

@@ -216,6 +216,7 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
   //console.log(network_arr);
   disableHierarchy(main_network);
   eventEdgeDblclicled(main_network);
+  NetworkContext();
   deleteEdgeAction();
   editEdgeMode();
 }

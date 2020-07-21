@@ -11,6 +11,7 @@
   font-family: consolas;
   overflow: auto;
 }
+
 .network{
   display:inline-block;
   height: 300px;
@@ -20,29 +21,6 @@
   padding: 1% 1% 1% 1%;
   white-space: normal;
   font-family: consolas;
-}
-
-#network-array-button{
-  position: absolute;
-  top: 40px;
-  right: 15px;
-  width: 30px;
-  height:30px;
-  border-radius: 50%;
-  background-image: url(https://icongr.am/clarity/ellipsis-vertical.svg?size=30&color=FFFFFF);
-  transition: 0.1s;
-  cursor: pointer;
-}
-#network-array-button.active{
-  position: absolute;
-  top: 6px;
-  right: 264px;
-  width: 30px;
-  height:30px;
-  border-radius: 50%;
-  background-image: url(https://icongr.am/clarity/close.svg?size=30&color=FFFFFF);
-  transition: 0.1s;
-  cursor: pointer;
 }
 
 #network-array{
@@ -65,6 +43,7 @@
   font-family: consolas;
   transition: 0.1s;
 }
+
 #sentences-array {
   margin-top: 27px;
   margin-bottom: 2px;
@@ -76,15 +55,6 @@
   white-space: normal;
   overflow-x: auto;
   float: left;
-  font-family: consolas;
-}
-.text_display_child{
-  width: 100%;
-  white-space: normal;
-  border: 1px solid #575f5d;
-  background: #303534;
-  color: #ffffff;
-  font-size: 10px;
   font-family: consolas;
 }
 
@@ -152,71 +122,4 @@
   background-color: #575f5d;
   border: 1px solid var(--dark-border-color);
   box-sizing: border-box;
-}
-.subbutton{
-  height: 40px;
-  width: 80px;
-  cursor: pointer;
-}
-.editbutton {
-  position: relative;
-  text-align: center;
-  font-size: 10px;
-  float: right;
-  height: 15px;
-  width: 21%;
-  display: inline-block;
-  margin: 0px 2px 0px 2px;
-  border-radius: 25px;
-  border: 1px solid var(--dark-border-color);
-  color: black;
-  font-family: consolas;
-  background-image: linear-gradient(180deg, white,white);
-  cursor: pointer;
-}
-
-.undobutton {
-  position: absolute;
-  top: 37px;
-  left: calc(21% + 4px);
-  width: 20px;
-  height: 20px;
-  border-radius: 25%;
-  border: 1px solid var(--dark-border-color);
-  background: white;
-  background-image: url(https://icongr.am/clarity/undo.svg?size=18&color=000000);
-  cursor: pointer;
-}
-.redobutton {
-  position: absolute;
-  top: 37px;
-  left: calc(21% + 26px);
-  width: 20px;
-  height: 20px;
-  border-radius: 25%;
-  border: 1px solid var(--dark-border-color);
-  background: white;
-  background-image: url(https://icongr.am/clarity/redo.svg?size=18&color=000000);
-  cursor: pointer;
-}
-
-.splitbutton{
-  cursor: pointer;
-}
-.undobutton:hover{
-  background: rgb(219, 219, 219);
-  background-image: url(https://icongr.am/clarity/undo.svg?size=18&color=000000);
-}
-.redobutton:hover{
-  background: rgb(219, 219, 219);
-  background-image: url(https://icongr.am/clarity/redo.svg?size=18&color=000000);
-}
-.editbutton:hover{
-  background-image: linear-gradient(180deg, rgb(219, 219, 219),rgb(219, 219, 219));
-}
-.splitbutton:hover{
-  background-image: linear-gradient(180deg, rgb(219, 219, 219),rgb(219, 219, 219));
-}
-.subbutton:hover{
-  background-image: linear-gradient(180deg, rgb(219, 219, 219),rgb(219, 219, 219));
 }

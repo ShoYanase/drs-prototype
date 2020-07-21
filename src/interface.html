@@ -9,9 +9,13 @@
   <script type="text/javascript" src="Ajax-xhr.js"></script>
   <script type="text/javascript" src="multi-network.js"></script>
   <script type="text/javascript" src="drug-drop.js"></script>
-  <script type="text/javascript" src="Undo-Redo.js"></script>
+  <script type="text/javascript" src="undo-redo.js"></script>
+  <script type="text/javascript" src="output-Image.js"></script>
+  <script type="text/javascript" src="attr-redef.js"></script>
   <link rel="stylesheet" type="text/css" href="style.css"/>
   <link rel="stylesheet" type="text/css" href="content.css"/>
+  <link rel="stylesheet" type="text/css" href="buttons.css"/>
+  <link rel="stylesheet" type="text/css" href="oncontext-menu.css"/>
 
 </head>
 
@@ -23,11 +27,14 @@
   <div id="sentences-array"></div>
   <div id="mynetwork"　draggable="false" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
 
-  <div id="edit-button" class="editbutton" type="button" value="">Add Edge</div>
-  <div id="delete-button" class="editbutton" type="button" value="">Delete Edge</div>
+  <button id="edit-button" class="editbutton" type="button" value="">Add Edge</button>
+  <button id="delete-button" class="editbutton" type="button" value="">Delete Edge</button>
 
   <form id="subform" onsubmit="AJAXSubmit(this); return false;">
-    <input class="splitbutton" id="spbutton" type="button" value="SPLIT" onclick=" AJAXSubmit_notform({text_in : document.getElementById('text-input').value})"></input>
+    <button id="spbutton" class="splitbutton" type="button" value="" onclick=" AJAXSubmit_notform({text_in : document.getElementById('text-input').value})">SPLIT</button>
+    <button id="undo-button" class="undobutton" type="button" onclick="console.log('undobutton');UndoAction();"></button>
+    <button id="redo-button" class="redobutton" type="button" onclick="console.log('redobutton');RedoAction();"></button>
+  
     <div class="textinput">
       <textarea id="text-input" class="text_in" style="resize:none" placeholder="文章を入力する" name="text_in"></textarea>
     </div>
@@ -40,19 +47,18 @@
         <label id="lblthres" for="numberthres">閾値</label><br>
         <input id="numberthres" type="number" placeholder="閾値" name="numberthres" value="55" onchange="clearElements('network-array'); act_mynetwork(arr_labels, points_matrix, numberthres.value, matrix_label, flex_threshold_range, contents); return false;"></input>
       </div>
-      <input class="subbutton" type="submit" value="SUBMIT"></input>
+      <button class="subbutton" type="submit" value="">SUBMIT</button>
     </div>
 
     
   </form>
   
-  
+  <div id="node-context-menu" class="custom-menu" type="context"></div>
   <div id="network-array"></div>
   <div id="network-array-button" type="button" onclick="  console.log('button click');
   $('#network-array').toggleClass('active');
   $('#network-array-button').toggleClass('active');"></div>
-  <div id="undo-button" class="undobutton" type="button" onclick="console.log('undobutton');UndoAction();"></div>
-  <div id="redo-button" class="redobutton" type="button" onclick="console.log('redobutton');RedoAction();"></div>
+  <button id="download" class="dlbutton" type="button" onclick="exportCanvas('image/jpeg');">Download Image</button>
 
 </body>
 </html>
