@@ -78,23 +78,25 @@
       }
     };
     main_network = new vis.Network(maincontainer, data, network_options);
-    e.target.parentNode.parentNode.remove();
+    
     disableHierarchy(main_network);
     eventEdgeDblclicled(main_network);
     NetworkContext();
     deleteEdgeAction();
     editEdgeMode();
+    e.target.parentNode.parentNode.remove();
   });
 
   function AddEdgeFunc(data, callback){
     //data.id = String(data.from)+"-"+String(data.to), idが重複するとエラーなる
     let edgeId = String(data.from + "-" + data.to);
-    //console.log(edgeId, main_network.getClusteredEdges(edgeId), data, points_matrix, typeof(points_matrix), points_matrix[0][5], typeof(points_matrix[0]));
+    console.log(edgeId, main_network.getClusteredEdges(edgeId), data, points_matrix, typeof(points_matrix), points_matrix[0][5], typeof(points_matrix[0]));
     let edge_isexist = main_network.getClusteredEdges(edgeId).length;
+    console.log(edgeId,edge_isexist);
     if(!edge_isexist){
       data.id = edgeId;
       data.label = String(points_matrix[0][data.from-1][data.to-1]);
-      data.color = '#ffffff';
+      data.color = '#738080';
       data.arrows = {
         to: {
           enabled: true,
@@ -105,6 +107,8 @@
       action_history.push("edgeadd");
       added_edge.push(edgeId);
       callback(data);
+    }else{
+      main_network.updateEdge(String(edgeId), {hidden: false});
     }
   }
 

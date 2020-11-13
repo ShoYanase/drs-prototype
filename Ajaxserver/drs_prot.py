@@ -115,7 +115,6 @@ def Content_addmat(arr_content, matsize, df_Content_points):
 
 def search_Conjuction(df_attr, sentence):
   if '接続詞' in sentence[0][3]:
-    print("setuzokusi")
     query = 'word == \"'+sentence[0][0]+'\"'
     arr_attr = df_attr.query(query)
     #print(sentence[0][0]," is ", arr_attr["attr"].tolist())
@@ -155,11 +154,13 @@ def Conjuction_addmat(rules, matsize, cur, arr_attr):
     adder_toend = cur + int(rule['to_end'])+1
     
     if np.isnan(rule['if_loc']) != True:
-      if arr_attr[cur+int(rule['if_loc'])] == rule['if_is']:
-        #print(point,"points [",adder_fromstart,":",adder_fromend,"] to [",adder_tostart,":",adder_toend,"] with \"", rules['attr'].tolist()[0],"\"")
-#        print(points_mat[adder_fromstart:adder_fromend][adder_tostart:adder_toend])
-        points_mat[adder_fromstart:adder_fromend,adder_tostart:adder_toend] += point
-        points_mat[adder_tostart:adder_toend,adder_fromstart:adder_fromend] += point
+      print("drs-prot:158\n",rule,"\n", cur+int(rule['if_loc']), arr_attr)
+      if cur+int(rule['if_loc']) < matsize:
+        if arr_attr[cur+int(rule['if_loc'])] == rule['if_is']:
+          #print(point,"points [",adder_fromstart,":",adder_fromend,"] to [",adder_tostart,":",adder_toend,"] with \"", rules['attr'].tolist()[0],"\"")
+  #        print(points_mat[adder_fromstart:adder_fromend][adder_tostart:adder_toend])
+          points_mat[adder_fromstart:adder_fromend,adder_tostart:adder_toend] += point
+          points_mat[adder_tostart:adder_toend,adder_fromstart:adder_fromend] += point
     else:
       #print(point,"points [",adder_fromstart,":",adder_fromend,"] to [",adder_tostart,":",adder_toend,"] with \"", rules['attr'].tolist()[0],"\"")
       points_mat[adder_fromstart:adder_fromend,adder_tostart:adder_toend] += point

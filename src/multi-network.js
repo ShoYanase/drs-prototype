@@ -17,12 +17,15 @@ matrix_label = [];
 
 main_network = undefined;
 network_arr = {};
+nodes = {};
+edges = {};
 
 network_options = {};
 var node_maxwidth = 250;
 var node_maxheight = 90;
 
-var flex_threshold_range = [45, 65];
+var flex_threshold_range = [55, 56];
+var flex_threshold_gap = 1;
 var numberthres = (flex_threshold_range[0]+flex_threshold_range[1])/2;
 
 function make_nodes(parag_len, labels, cont){
@@ -32,20 +35,26 @@ function make_nodes(parag_len, labels, cont){
         //console.log(labels[i]);
         if(cont[i] == "claim"){
           border_color = '#EF476F';
+          highlight_color = '#F8A0A3';
         }else{
           border_color = '#76eec6';
+          highlight_color = '#9AFDE8';
         }
         arr_nodes.push({
             id: i+1,
             label: labels[i],
             font: {color:'#ffffff'},
             color: {background: '#575f5d',
-                    border: border_color
+                    border: border_color,
+                    highlight: {
+                      border: highlight_color
+                    }
             },
         });
         
     }
-    return arr_nodes;
+    console.log(new vis.DataSet(arr_nodes));
+    return new vis.DataSet(arr_nodes);
 }
 
 function make_edges(matrix, thres){
@@ -59,12 +68,12 @@ function make_edges(matrix, thres){
         if(matrix[i][j] >= thres){
           //console.log("edges "+i+j);
           arr_edges.push({
-            id: i+"-"+j,
+            id: i+1+"-"+j+1,
             from: i+1, 
             to: j+1, 
             label: String(matrix[i][j]),
             font: {size: 16},
-            color: '#ffffff',
+            color: '#738080',
             arrows: {
               to:{
                 enabled: true,
@@ -77,7 +86,7 @@ function make_edges(matrix, thres){
         if(edgecount>1){break;}
       }
     }
-    return arr_edges;
+    return new vis.DataSet(arr_edges);
 }
 
 class ExpandingDiv extends HTMLDivElement{
@@ -110,7 +119,7 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
     //editedEdgeOptions(main_network);
     var container_boxarr = document.getElementById('network-array');
     
-    for(let j=threshold_range[0];j<threshold_range[1];j+=3){
+    for(let j=threshold_range[0];j<threshold_range[1];j+=flex_threshold_gap){
       var el = document.createElement('div', {is : 'expanding-div'});
       el.setAttribute("id", mat_label_[0]+j);
       let network = visNetwork(labels_, matrix_[0], j, mat_label_[0], el, '100%', '100%', content_);
@@ -143,9 +152,11 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
   function visNetwork(labels, matrix, thres, mat_label, container, height, width, cont) {
     //console.log("visNetwork",mat_label+"\nthres "+thres);
     let parag_len = labels.length;
+    nodes = make_nodes(parag_len, labels, cont);
+    edges = make_edges(matrix, thres);
     var data = {
-      nodes: make_nodes(parag_len, labels, cont),
-      edges: make_edges(matrix, thres)
+      nodes: nodes,
+      edges: edges
     };
     network_options = {
       autoResize: true,
@@ -182,7 +193,6 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
         },
         color:{
           highlight:{
-            border:'#9AFDE8',
             background: '#575f5d'
           }
         }
