@@ -377,7 +377,7 @@ def Point_matrix(paragraph, target):
   conjuction_addmat = Paragraph_to_Conjuction_addmat(df_conjuction_attr, df_conjuction_points, sentences_, arr_content)
   conjuction_addmat['matrix'] = conjuction_addmat['matrix'].map(lambda x: x + points_mat)
   #print("---------------------------------------------------------------------")
-
+  print(conjuction_addmat)
   res_mat = []
   res_label = []
   i = 0

@@ -51,7 +51,6 @@ function make_nodes(parag_len, labels, cont){
                     }
             },
         });
-        
     }
     console.log(new vis.DataSet(arr_nodes));
     return new vis.DataSet(arr_nodes);
@@ -60,33 +59,140 @@ function make_nodes(parag_len, labels, cont){
 function make_edges(matrix, thres){
   if(typeof matrix == "number"){return [];}
   //console.log(matrix, thres);
-    parag_len = matrix.length;
-    var arr_edges = new Array();
-    for(let i=0; i<parag_len; i++){
-      let edgecount = 0;
-      for(let j=i+1; j<parag_len; j++){
-        if(matrix[i][j] >= thres){
-          //console.log("edges "+i+j);
-          arr_edges.push({
-            id: i+1+"-"+j+1,
-            from: i+1, 
-            to: j+1, 
-            label: String(matrix[i][j]),
-            font: {size: 16},
-            color: '#738080',
-            arrows: {
-              to:{
-                enabled: true,
-                type: 'arrow'
-              }
+  parag_len = matrix.length;
+  var arr_edges = new Array();
+  for(let i=0; i<parag_len; i++){
+    let edgecount = 0;
+    for(let j=i+1; j<parag_len; j++){
+      if(matrix[i][j] >= thres){
+        //console.log("edges "+i+j);
+        arr_edges.push({
+          id: i+1+"-"+j+1,
+          from: i+1, 
+          to: j+1, 
+          label: String(matrix[i][j]),
+          font: {size: 16},
+          color: '#738080',
+          arrows: {
+            to:{
+              enabled: true,
+              type: 'arrow'
             }
-          });
-          edgecount++;
-        }
-        if(edgecount>1){break;}
+          }
+        });
+        edgecount++;
+      }
+      if(edgecount>1){break;}
+    }
+  }
+  console.log(new vis.DataSet(arr_edges));
+  return new vis.DataSet(arr_edges);
+}
+
+function concutArrays(array){
+  base = [];
+  console.log(array);
+  if(Array.isArray(array)){
+    for(let a=0; a<array.length; a++){
+      base = base.concat(array[a]);
+    }
+    return base;
+  }else{
+    console.log(array+"is not array");
+  }
+}
+
+function sortNum(array){
+  if(Array.isArray(array)){
+    return array.sort(function (a, b) {
+      return a - b;
+    });
+  }else{
+    console.log(array+"is not array");
+  }
+}
+
+function makeThresholdArray(matrix_, thres_){
+  /**最小ライン以上の点数を閾値に採用する*/
+  matrix_ = concutArrays(matrix_);
+  thres_arr = Array.from(new Set(matrix_));
+  thres_arr = thres_arr.filter(x => x>thres_);
+  thres_arr = sortNum(thres_arr);
+  console.log(matrix_,thres_arr);
+  return thres_arr; /**閾値の配列 */
+}
+
+function makeEdgebyThresArr(matrix_arr, thres_, mat_label){
+  /**枝分けされた点数*採用した閾値のエッジ */
+  let edges_buf = [];
+  let labels_buf = [];
+  //console.log(matrix_arr);
+  //console.log(mat_label);
+  for(let i=0; i<matrix_arr.length; i++){
+    //console.log(i);
+    thres_arr = makeThresholdArray(matrix_arr[i], thres_);
+    let edge_buf = [];
+    let label_buf = [];
+    for(let t=0; t<thres_arr.length; t++){
+      let edges = make_edges(matrix_arr[i], thres_arr[t]);
+      edge_buf.push(edges);
+      label_buf.push(mat_label[i]+String(thres_arr[t]));
+    }
+    edges_buf.push(edge_buf);
+    labels_buf.push(label_buf);
+  }
+  edgedatas = {edges: edges_buf, labels: labels_buf}
+  console.log(edgedatas);
+  return edgedatas; /**エッジの2次元配列 */
+}
+
+function SimpleRanking(edges_arr){
+  console.log(edges_arr);
+  let rank_arr = [];
+  for(let i=0; i<edges_arr.length; i++){
+    edges = edges_arr[i];
+    let rank = [];
+    console.log(i);
+    for(let j=0; j<edges.length; j++){
+      console.log(j);
+      if(j == 0){
+        rank.push(10);
+      }else{
+        rank.push(0);
       }
     }
-    return new vis.DataSet(arr_edges);
+    rank_arr.push(rank);
+  }
+  console.log(rank_arr);
+  return rank_arr; /**候補の優先度の2次元配列 */
+}
+
+function make_datas(labels_, matrix_arr, thres_, cont, mat_label){
+  let nodes = make_nodes(labels_.length, labels_, cont); /** 文の中身. 共通 */
+  let edgedatas = makeEdgebyThresArr(matrix_arr, thres_, mat_label); /** 枝分けされた点数*採用した閾値 */
+  let edges = edgedatas.edges;
+  let labels = edgedatas.labels;
+  let ranks = SimpleRanking(edgedatas.edges); /**候補の優先度 */
+
+  console.log(edges);
+  edges = concutArrays(edges);
+  labels = concutArrays(labels);
+  ranks = concutArrays(ranks);
+
+  datas = [];
+  console.log(edges);
+  for(let i=0; i<edges.length; i++){
+    datas.push(
+      {
+        nodes: nodes,
+        edges: edges[i],
+        ranks: ranks[i],
+        mat_labels: labels[i]
+      }
+    );
+  }
+
+  return datas;
 }
 
 class ExpandingDiv extends HTMLDivElement{
@@ -102,133 +208,119 @@ class ExpandingDiv extends HTMLDivElement{
 
 var selectedEdgeId = {};
 function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, content_){
+  //console.log(matrix_);
+  console.log(make_datas(labels_, matrix_, thres_, content_, mat_label_));
+
   resetNetworkEvents();
   deleted_network = {};
   
   $('#network-array').addClass('active');
   $('#network-array-button').addClass('active');
-  maincontainer = document.getElementById('mynetwork');
-  
+  var maincontainer = document.getElementById('mynetwork');
+  var container_boxarr = document.getElementById('network-array');
+
   maincontainer.setAttribute('ondragover','allowDrop(event)');
   maincontainer.setAttribute('ondrop','drop(event)');
 
-  if(Array.isArray(matrix_[0])){
-    matarr_len = matrix_.length;
-    main_network = visNetwork(labels_, matrix_[0], thres_, mat_label_[0], maincontainer,'100%', '100%', content_);
-    disableHierarchy(main_network);
-    //editedEdgeOptions(main_network);
-    var container_boxarr = document.getElementById('network-array');
-    
-    for(let j=threshold_range[0];j<threshold_range[1];j+=flex_threshold_gap){
+  datas = make_datas(labels_, matrix_, thres_, content_, mat_label_);
+  datas.sort(function (a, b) {
+    return b.ranks - a.ranks;
+  });
+  console.log(datas);
+
+  for(let d=0; d<datas.length; d++){
+    if(d == 0){
+      main_network = visNetwork(datas[d], maincontainer, '100%', '100%');
+      disableHierarchy(main_network);
+      eventEdgeDblclicled(main_network);
+    }else{
       var el = document.createElement('div', {is : 'expanding-div'});
-      el.setAttribute("id", mat_label_[0]+j);
-      let network = visNetwork(labels_, matrix_[0], j, mat_label_[0], el, '100%', '100%', content_);
-      disableHierarchy(network);
-      //editedEdgeOptions(network);
-      container_boxarr.appendChild(el);
-      network_arr[mat_label_[0]+j] = network;
-      eventEdgeDblclicled(network);
-      //editEdgeMode(network);
+      elid = datas[d].mat_labels;
+      el.setAttribute("id", elid);
+      let network = visNetwork(datas[d], el, '100%', '100%');
+     disableHierarchy(network);
+     container_boxarr.appendChild(el);
+     network_arr[elid] = network;
+     eventEdgeDblclicled(network);
     }
-
-    for(let i=1;i<matarr_len;i++){
-      for(let j=threshold_range[0];j<threshold_range[1];j+=3){
-        var el = document.createElement('div', {is : 'expanding-div'});
-        el.setAttribute("id", mat_label_[i]+j);
-        let network = visNetwork(labels_, matrix_[i], j, mat_label_[i], el, '100%', '100%', content_);
-        disableHierarchy(network);
-        //editedEdgeOptions(network);
-        container_boxarr.appendChild(el);
-        network_arr[mat_label_[i]+j] = network;
-        eventEdgeDblclicled(network);
-        //editEdgeMode(network);
-      }
-    }
-  } else {
-    main_network = visNetwork(labels_, matrix_, thres_, mat_label_, maincontainer, '100%', '100%', content_);
   }
-
-
-  function visNetwork(labels, matrix, thres, mat_label, container, height, width, cont) {
-    //console.log("visNetwork",mat_label+"\nthres "+thres);
-    let parag_len = labels.length;
-    nodes = make_nodes(parag_len, labels, cont);
-    edges = make_edges(matrix, thres);
-    var data = {
-      nodes: nodes,
-      edges: edges
-    };
-    network_options = {
-      autoResize: true,
-      height: height,
-      width: width,
-      layout: {
-        hierarchical: {
-          enabled: true,
-          direction: "UD",
-          sortMethod: "directed",
-          levelSeparation: node_maxheight +20,
-          nodeSpacing: node_maxwidth
-        }
-      },
-      edges: {
-        font: {
-          size: 16
-        },
-        widthConstraint: {
-          maximum: node_maxwidth
-        },
-        color: {color: '#76eec6'},
-        arrows: {
-            to:{
-                enabled: true,
-                type: 'arrow'
-            }
-        }
-      },
-      nodes: {
-        shape: 'box',
-        widthConstraint: {
-          maximum: node_maxwidth
-        },
-        color:{
-          highlight:{
-            background: '#575f5d'
-          }
-        }
-      },
-      physics: {
-        enabled: true,
-        hierarchicalRepulsion:{
-          centralGravity: 0.0,
-          springLength: 500,
-          springConstant: 0.01,
-
-          nodeDistance: 50,
-          springLength: 150,
-          damping: 1.0
-        },
-        repulsion:{
-          damping: 1.0
-        }
-      },
-      manipulation: {
-        enabled: false,
-        addEdge: function (data, callback) {
-          AddEdgeFunc(data, callback);
-        }
-      }
-    };
-    //console.log(Array.from({length: parag_len}, (v, i) => i+1));
-    return new vis.Network(container, data, network_options);
-  }
-  //console.log(main_network);
-  //console.log(network_arr);
-  disableHierarchy(main_network);
-  eventEdgeDblclicled(main_network);
-  NetworkContext();
+  //kokokara
+  console.log(main_network);
+  console.log(network_arr);
+  
+  //NetworkContext();
   deleteEdgeAction();
   editEdgeMode();
+}
+
+function visNetwork(datas, container, height, width) {
+  let data = {
+    nodes: datas.nodes,
+    edges: datas.edges
+  };
+  network_options = {
+    autoResize: true,
+    height: height,
+    width: width,
+    layout: {
+      hierarchical: {
+        enabled: true,
+        direction: "UD",
+        sortMethod: "directed",
+        levelSeparation: node_maxheight + 20,
+        nodeSpacing: node_maxwidth
+      }
+    },
+    edges: {
+      font: {
+        size: 16
+      },
+      widthConstraint: {
+        maximum: node_maxwidth
+      },
+      color: { color: '#76eec6' },
+      arrows: {
+        to: {
+          enabled: true,
+          type: 'arrow'
+        }
+      }
+    },
+    nodes: {
+      shape: 'box',
+      widthConstraint: {
+        maximum: node_maxwidth
+      },
+      color: {
+        highlight: {
+          background: '#575f5d'
+        }
+      }
+    },
+    physics: {
+      enabled: true,
+      hierarchicalRepulsion: {
+        centralGravity: 0.0,
+        springLength: 500,
+        springConstant: 0.01,
+
+        nodeDistance: 50,
+        springLength: 150,
+        damping: 1.0
+      },
+      repulsion: {
+        damping: 1.0
+      }
+    },
+    manipulation: {
+      enabled: false,
+      addEdge: function (data, callback) {
+        AddEdgeFunc(data, callback);
+      }
+    }
+  };
+  //console.log(Array.from({length: parag_len}, (v, i) => i+1));
+  return new vis.Network(container, data, network_options);
 }
 
 function disableHierarchy(network){
