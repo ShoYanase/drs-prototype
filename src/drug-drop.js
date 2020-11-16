@@ -77,6 +77,7 @@
         }
       }
     };
+    var maincontainer = document.getElementById('mynetwork');
     main_network = new vis.Network(maincontainer, data, network_options);
     
     disableHierarchy(main_network);

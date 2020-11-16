@@ -219,8 +219,8 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
   var maincontainer = document.getElementById('mynetwork');
   var container_boxarr = document.getElementById('network-array');
 
-  maincontainer.setAttribute('ondragover','allowDrop(event)');
-  maincontainer.setAttribute('ondrop','drop(event)');
+  //maincontainer.setAttribute('ondragover','allowDrop(event)');
+  //maincontainer.setAttribute('ondrop','drop(event)');
 
   datas = make_datas(labels_, matrix_, thres_, content_, mat_label_);
   datas.sort(function (a, b) {
@@ -249,6 +249,9 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
   console.log(network_arr);
   
   //NetworkContext();
+  disableHierarchy(main_network);
+  eventEdgeDblclicled(main_network);
+  NetworkContext();
   deleteEdgeAction();
   editEdgeMode();
 }
