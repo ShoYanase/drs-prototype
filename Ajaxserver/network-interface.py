@@ -34,10 +34,18 @@ def pmat():
 
 @app.route('/split_parag', methods=['POST'])
 def sppar():
-	text = request.form.get('text_in')
+	data = request.get_json()
+	text = json.dumps(data)
 	print(text)
-	target = -1
+	target = 55
 	return set_data(text,target)
+
+@app.route('/editlog', methods=['POST'])
+def glog():
+	data = request.get_json()
+	text = json.dumps(data)
+	print(text)
+	return 'editlog received'
 
 @app.route('/hello')
 def hello():

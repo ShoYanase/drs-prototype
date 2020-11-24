@@ -1,7 +1,7 @@
 imageMimes = ['image/jpeg', 'image/png']
 
 function exportCanvas(imgMime){
-    console.log('dlclick');
+    //console.log('dlclick');
     canvas = document.getElementById('mynetwork').firstChild.firstChild;
     canvas.style = "background-color: #303534;"
 

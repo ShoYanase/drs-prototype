@@ -67,7 +67,7 @@ function make_edges(matrix, thres){
       if(matrix[i][j] >= thres){
         //console.log("edges "+i+j);
         arr_edges.push({
-          id: i+1+"-"+j+1,
+          id: (Number(i)+1)+"-"+(Number(j)+1),
           from: i+1, 
           to: j+1, 
           label: String(matrix[i][j]),
@@ -254,6 +254,7 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
   NetworkContext();
   deleteEdgeAction();
   editEdgeMode();
+  Submit_EditedNetwork()
 }
 
 function visNetwork(datas, container, height, width) {
@@ -342,6 +343,7 @@ function disableHierarchy(network){
 function resetNetworkEvents(){
   $('#delete-button').off('click',);
   $('#edit-button').off('click',);
+  $('#download').off('click',);
 }
 
 function appendSentences(sentences){

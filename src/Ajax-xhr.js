@@ -46,35 +46,48 @@ function ajaxSuccess () {
   //console.log(this.responseText);
 }
 
-function AJAXSubmit (oFormElement) {
+function AJAXSubmit (oFormElement, path) {
   var oReq = new XMLHttpRequest();
   let data =  new FormData(oFormElement)
   oReq.onload = ajaxSuccess;
-  oReq.open("post", "http://127.0.0.1:5000/point_matrix");
+  oReq.open("post", "http://127.0.0.1:5000/"+path);
   XMLHttpRequest.withCredentials = true;
   XMLHttpRequest.responseType = 'json';
   oReq.send(data);
 
   oReq.onreadystatechange = function() {
-    generatefromReq(oReq)
+    generatefromRes(oReq)
   }
 }
 
-function AJAXSubmit_notform (oReqElement) {
+function AJAXSubmit_json (oReqElement, path) {
   var oReq = new XMLHttpRequest();
-  let sendData = new FormData(document.getElementById('subform'))
-  console.log(sendData);
+  let data = oReqElement;
+  console.log(data);
   oReq.onload = ajaxSuccess;
-  oReq.open("post", "http://127.0.0.1:5000/split_parag");
+  oReq.open("post", "http://127.0.0.1:5000/"+path);
+  oReq.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   XMLHttpRequest.withCredentials = true;
   XMLHttpRequest.responseType = 'json';
-  oReq.send(sendData);
+  oReq.send(data);
   oReq.onreadystatechange = function() {
-    generatefromReq(oReq)
+    generatefromRes(oReq)
   }
 }
 
-function generatefromReq(req){
+function SendLog_json (oReqElement, path){
+  var oReq = new XMLHttpRequest();
+  let data = oReqElement;
+  console.log(data);
+  oReq.onload = ajaxSuccess;
+  oReq.open("post", "http://127.0.0.1:5000/"+path);
+  oReq.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+  XMLHttpRequest.withCredentials = true;
+  XMLHttpRequest.responseType = 'json';
+  oReq.send(data);
+}
+
+function generatefromRes(req){
   if (req.readyState === 4) {
     res = req.response;
     obj = JSON.parse(res);
