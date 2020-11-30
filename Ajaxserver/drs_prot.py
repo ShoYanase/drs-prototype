@@ -155,7 +155,7 @@ def Conjuction_addmat(rules, matsize, cur, arr_attr, priority):
 #  print(rules)
   for index, rule in rules.iterrows():
 #    print(rule)
-    point = int(rule['point']*(priority**0.9))
+    point = int(rule['point']*(priority))
     adder_fromstart = cur + int(rule['from_start'])
     adder_fromend = cur + int(rule['from_end'])+1
     adder_tostart = cur + int(rule['to_start'])
@@ -342,9 +342,6 @@ df_conjuction_priority_arr = {
 print((df_conjuction_priority_arr['付加']))
 
 #指示代名詞
-##点数
-directive_point = 10
-
 #キーワード
 ##単語一覧
 path_Keywords = "..\data\data_prot\Rules\Keywords.csv"
@@ -355,7 +352,7 @@ df_keywords = pd.read_csv(path_Keywords)
 path_Exeptwords = "..\data\data_prot\Rules\Exeptwords.csv"
 df_exeptwords = pd.read_csv(path_Exeptwords)
 ##点数
-commonwords_coef = 6
+commonwords_coef = 3
 ##閾値
 commonwords_thres = 0.5
 
@@ -407,10 +404,10 @@ def Point_matrix(paragraph, target):
 
   #指示代名詞
   #print("---------------指示代名詞------------------------------------------------")
-  directive_addmat = Directive_addmat(sentences_, target, directive_point)
-  points_mat += directive_addmat
+  #directive_addmat = Directive_addmat(sentences_, target, directive_point)
+  #points_mat += directive_addmat
   
-  #他キーワード
+  #他キーワード+指示語
   #print("---------------キーワード------------------------------------------------")
   keyword_addmat = Keyword_addmat(sentences_, target, df_keywords)
   points_mat += keyword_addmat

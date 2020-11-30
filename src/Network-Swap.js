@@ -15,68 +15,7 @@
     //console.log(e);
     deleted_mainnetwork.push(main_network);
     let data = getData(network_arr[targetId]);
-    network_options = {
-      autoResize: true,
-      height: "100%",
-      width: "100%",
-      layout: {
-        hierarchical: {
-          enabled: true,
-          direction: "UD",
-          sortMethod: "directed",
-          levelSeparation: node_maxheight +20,
-          nodeSpacing: node_maxwidth
-        }
-      },
-      edges: {
-        font: {
-          size: 16
-        },
-        widthConstraint: {
-          maximum: node_maxwidth
-        },
-        color: {color: '#76eec6'},
-        arrows: {
-            to:{
-                enabled: true,
-                type: 'arrow'
-            }
-        }
-      },
-      nodes: {
-        shape: 'box',
-        widthConstraint: {
-          maximum: node_maxwidth
-        },
-        color:{
-          highlight:{
-            border:'#9AFDE8',
-            background: '#575f5d'
-          }
-        }
-      },
-      physics: {
-        enabled: true,
-        hierarchicalRepulsion:{
-          centralGravity: 0.0,
-          springLength: 500,
-          springConstant: 0.01,
-
-          nodeDistance: 50,
-          springLength: 150,
-          damping: 1.0
-        },
-        repulsion:{
-          damping: 1.0
-        }
-      },
-      manipulation: {
-        enabled: false,
-        addEdge: function (data, callback) {
-          AddEdgeFunc(data, callback);
-        }
-      }
-    };
+    network_options = getBaseNetworkOption('100%','100%', node_maxheight, node_maxwidth);
     var maincontainer = document.getElementById('mynetwork');
     main_network = new vis.Network(maincontainer, data, network_options);
     
@@ -211,32 +150,3 @@
     });
   }
 
-  function getData(network){
-    console.log(network);
-    var data = network.body.data;
-    return data;
-  } 
-
-  function getOptions(network){
-    var opt = network.options;
-    return opt;
-  } 
-
-  function getNodes(network){
-    let data = network.body.nodeIndices;
-    //console.log(data);
-    //console.log(network.body.nodes[1].labelModule.elementOptions.label);
-    let labeldata = {};
-    for(let i=0;i<data.length;i++){
-      let key = data[i];
-      //console.log(network.body.nodes[key].labelModule.elementOptions.label);
-      labeldata[key] = network.body.nodes[key].labelModule.elementOptions.label;
-    }
-    return labeldata;
-  }
-
-  function getEdges(network){
-    let data = network.body.edgeIndices;
-    //console.log(data);
-    return data;
-  }

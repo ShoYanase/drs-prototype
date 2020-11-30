@@ -28,7 +28,6 @@ function NetworkContext(){
     */
 }
 
-
 function NodeColor(name){
     this.background = '#575f5d';
     this.highlight_bg = '#575f5d';
@@ -55,20 +54,15 @@ function RedefAttribute(nodeId){
     //エッジ全部非表示→点数計算→AddEdge改変でエッジ描画
     console.log(nodeId);
     if (nodeId) {
-        let clickedNode = nodes.get(nodeId);
-        console.log(clickedNode,"\n",main_network);
         let nodeColor = new NodeColor(contents[nodeId-1]);
         contents[nodeId-1] = nodeColor.next_name;
-        console.log(clickedNode);
         main_network.body.nodes[nodeId].options.color = {   
-            background: nodeColor.background, 
-            border: nodeColor.border,
-            highlight: {
-                background: nodeColor.highlight_bg,
-                border: nodeColor.highlight_bd,
+            "background": nodeColor.background, 
+            "border": nodeColor.border,
+            "highlight": {
+                "background": nodeColor.highlight_bg,
+                "border": nodeColor.highlight_bd
             }
         }
-        nodes.update(clickedNode);
-        console.log(clickedNode);
     }
 }

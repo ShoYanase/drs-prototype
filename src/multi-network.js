@@ -41,13 +41,13 @@ function make_nodes(parag_len, labels, cont){
           highlight_color = '#9AFDE8';
         }
         arr_nodes.push({
-            id: i+1,
-            label: labels[i],
-            font: {color:'#ffffff'},
-            color: {background: '#575f5d',
-                    border: border_color,
-                    highlight: {
-                      border: highlight_color
+            "id": i+1,
+            "label": labels[i],
+            "font": {color:'#ffffff'},
+            "color": {background: '#575f5d',
+                    "border": border_color,
+                    "highlight": {
+                      "border": highlight_color
                     }
             },
         });
@@ -67,16 +67,16 @@ function make_edges(matrix, thres){
       if(matrix[i][j] >= thres){
         //console.log("edges "+i+j);
         arr_edges.push({
-          id: (Number(i)+1)+"-"+(Number(j)+1),
-          from: i+1, 
-          to: j+1, 
-          label: String(matrix[i][j]),
-          font: {size: 16},
-          color: '#738080',
-          arrows: {
-            to:{
-              enabled: true,
-              type: 'arrow'
+          "id": (Number(i)+1)+"-"+(Number(j)+1),
+          "from": i+1, 
+          "to": j+1, 
+          "label": String(matrix[i][j]),
+          "font": {size: 16},
+          "color": '#738080',
+          "arrows": {
+            "to":{
+              "enabled": true,
+              "type": 'arrow'
             }
           }
         });
@@ -117,8 +117,13 @@ function makeThresholdArray(matrix_, thres_){
   matrix_ = concutArrays(matrix_);
   thres_arr = Array.from(new Set(matrix_));
   thres_arr = thres_arr.filter(x => x>thres_);
-  thres_arr = sortNum(thres_arr);
-  console.log(matrix_,thres_arr);
+  if(thres_arr.length > 0){
+    thres_arr = sortNum(thres_arr);
+    console.log(matrix_,thres_arr);
+  }else{
+    makeThresholdArray(matrix_, thres_-1);
+  }
+
   return thres_arr; /**閾値の配列 */
 }
 
@@ -184,10 +189,10 @@ function make_datas(labels_, matrix_arr, thres_, cont, mat_label){
   for(let i=0; i<edges.length; i++){
     datas.push(
       {
-        nodes: nodes,
-        edges: edges[i],
-        ranks: ranks[i],
-        mat_labels: labels[i]
+        "nodes": nodes,
+        "edges": edges[i],
+        "ranks": ranks[i],
+        "mat_labels": labels[i]
       }
     );
   }
@@ -259,70 +264,10 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
 
 function visNetwork(datas, container, height, width) {
   let data = {
-    nodes: datas.nodes,
-    edges: datas.edges
+    "nodes": datas.nodes,
+    "edges": datas.edges
   };
-  network_options = {
-    autoResize: true,
-    height: height,
-    width: width,
-    layout: {
-      hierarchical: {
-        enabled: true,
-        direction: "UD",
-        sortMethod: "directed",
-        levelSeparation: node_maxheight + 20,
-        nodeSpacing: node_maxwidth
-      }
-    },
-    edges: {
-      font: {
-        size: 16
-      },
-      widthConstraint: {
-        maximum: node_maxwidth
-      },
-      color: { color: '#76eec6' },
-      arrows: {
-        to: {
-          enabled: true,
-          type: 'arrow'
-        }
-      }
-    },
-    nodes: {
-      shape: 'box',
-      widthConstraint: {
-        maximum: node_maxwidth
-      },
-      color: {
-        highlight: {
-          background: '#575f5d'
-        }
-      }
-    },
-    physics: {
-      enabled: true,
-      hierarchicalRepulsion: {
-        centralGravity: 0.0,
-        springLength: 500,
-        springConstant: 0.01,
-
-        nodeDistance: 50,
-        springLength: 150,
-        damping: 1.0
-      },
-      repulsion: {
-        damping: 1.0
-      }
-    },
-    manipulation: {
-      enabled: false,
-      addEdge: function (data, callback) {
-        AddEdgeFunc(data, callback);
-      }
-    }
-  };
+  network_options = getBaseNetworkOption(height, width, node_maxheight, node_maxwidth)
   //console.log(Array.from({length: parag_len}, (v, i) => i+1));
   return new vis.Network(container, data, network_options);
 }
@@ -330,11 +275,11 @@ function visNetwork(datas, container, height, width) {
 function disableHierarchy(network){
   network.on('startStabilizing', function(e){
     network.setOptions({
-      layout:{
-        hierarchical: false
+      "layout":{
+        "hierarchical": false
       },
-      physics:{
-        enabled: false
+      "physics":{
+        "enabled": false
       }
     });
   });

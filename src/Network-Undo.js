@@ -30,70 +30,7 @@ $(window).keydown(function(e){
 function UndoAction(){
   console.log("UndoAction",action_history);
   let hist = action_history.pop();
-  network_options = {
-    autoResize: true,
-    height: "100%",
-    width: "100%",
-    layout: {
-      hierarchical: {
-        enabled: true,
-        direction: "UD",
-        sortMethod: "directed",
-        levelSeparation: node_maxheight +20,
-        nodeSpacing: node_maxwidth
-      }
-    },
-    edges: {
-      font: {
-        size: 16
-      },
-      widthConstraint: {
-        maximum: node_maxwidth
-      },
-      color: {color: '#76eec6'},
-      arrows: {
-        to:{
-          enabled: true,
-          type: 'arrow'
-        }
-      }
-    },
-    nodes: {
-      shape: 'box',
-      widthConstraint: {
-        maximum: node_maxwidth
-      },
-      color:{
-        highlight:{
-            border:'#9AFDE8',
-            background: '#575f5d'
-        }
-      }
-    },
-    physics: {
-      enabled: true,
-      ///***
-      hierarchicalRepulsion:{
-        centralGravity: 0.0,
-        springLength: 500,
-        springConstant: 0.01,
-
-        nodeDistance: 50,
-        springLength: 150,
-        damping: 1.0
-      },
-      repulsion:{
-        damping: 1.0
-      }
-      // */
-    },
-    manipulation: {
-      enabled: false,
-      addEdge: function (data, callback) {
-          AddEdgeFunc(data, callback);
-      }
-    }
-  };
+  network_options = getBaseNetworkOption('100%','100%', node_maxheight, node_maxwidth);
 
   function UndoDeletedNetworks(){
     console.log(deleted_network_id);
@@ -134,6 +71,7 @@ function UndoAction(){
     let main_data = getData(main_network);
     let replaced_data = getData(deleted_mainnetwork.pop());
 
+    var maincontainer = document.getElementById('mynetwork');
     let container_boxarr = document.getElementById('network-array');
     let el = document.createElement('div', {is : 'expanding-div'});
     let elementId = swapped_network_id.pop();
