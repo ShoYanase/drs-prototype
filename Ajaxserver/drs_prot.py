@@ -142,7 +142,7 @@ def search_Priority(df_priorities, word):
   print(res)
   priority = int(res['point'].values[0])
   print('priority: ',priority)
-  return abs(priority)
+  return priority
 
 """### 加点行列をつくる"""
 #search_ConjuctionからDataFrame.iterrows()でiterateしてattrでrsearch_Rulesから抽出適用・構造候補の加点行列を作る
@@ -155,7 +155,7 @@ def Conjuction_addmat(rules, matsize, cur, arr_attr, priority):
 #  print(rules)
   for index, rule in rules.iterrows():
 #    print(rule)
-    point = int(rule['point']*(priority))
+    point = int(abs(rule['point'])*(priority))
     adder_fromstart = cur + int(rule['from_start'])
     adder_fromend = cur + int(rule['from_end'])+1
     adder_tostart = cur + int(rule['to_start'])

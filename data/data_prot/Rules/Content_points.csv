@@ -1,5 +1,5 @@
 from,to,point
 claim,claim,2
 claim,ground,0
-ground,claim,3
+ground,claim,2
 ground,ground,2

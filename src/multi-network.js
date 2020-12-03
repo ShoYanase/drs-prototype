@@ -24,7 +24,7 @@ network_options = {};
 var node_maxwidth = 250;
 var node_maxheight = 90;
 
-var flex_threshold_range = [55, 56];
+var flex_threshold_range = [53, 56];
 var flex_threshold_gap = 1;
 var numberthres = (flex_threshold_range[0]+flex_threshold_range[1])/2;
 
@@ -116,7 +116,7 @@ function makeThresholdArray(matrix_, thres_){
   /**最小ライン以上の点数を閾値に採用する*/
   matrix_ = concutArrays(matrix_);
   thres_arr = Array.from(new Set(matrix_));
-  thres_arr = thres_arr.filter(x => x>thres_);
+  thres_arr = thres_arr.filter(x => x>=thres_);
   if(thres_arr.length > 0){
     thres_arr = sortNum(thres_arr);
     console.log(matrix_,thres_arr);
