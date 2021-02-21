@@ -53,6 +53,7 @@ def parse_Sentence(sentence):
 def parse_Parag_to_Word(paragraph):
   sentences = parse_Paragraph(paragraph)
   word_parsed_paragraph = [[p.split('\t') for p in parse_Sentence(s).split('\n')[:-2]] for s in sentences]
+  #print(word_parsed_paragraph)
   return word_parsed_paragraph
 
 """## 要素分類(import Parsing Input)
@@ -80,7 +81,7 @@ def make_vec(sentence, wv_model):
 #文単位で分割された文章を入力　推測の結果をリストで返す
 def predict_Sentence_attr(vec, model):
   prediction = model.predict(vec).astype(int)
-  #print(prediction[0])
+  ##print(prediction[0])
   prediction = np.where(prediction==0, 'claim', prediction)
   prediction = np.where(prediction=='-1', 'ground', prediction)
   prediction = np.where(prediction=='1', 'ground', prediction)
@@ -106,7 +107,7 @@ def Content_addmat(arr_content, matsize, df_Content_points):
         res = df_Content_points[df_Content_points['from']==arr_content[i]]
         res = res[res['to']==arr_content[j]]
         points_mat[i][j] = res["point"]+i-j+1
-        points_mat[j][i] = res["point"]+i-j+1
+        #points_mat[j][i] = res["point"]+i-j+1
   return points_mat
 
 
@@ -116,7 +117,7 @@ def search_Conjuction(df_attr, sentence):
   if '接続詞' in sentence[0][3]:
     query = 'word == \"'+sentence[0][0]+'\"'
     arr_attr = df_attr.query(query)
-    #print(sentence[0][0]," is ", arr_attr["attr"].tolist())
+    ##print(sentence[0][0]," is ", arr_attr["attr"].tolist())
     return arr_attr
   else:
     return 0
@@ -135,13 +136,13 @@ def search_Rules(df_rules, attr):
 
 """### 語単位の加点"""
 def search_Priority(df_priorities, word):
-  print(df_priorities)
-  print(type(df_priorities))
+  #print(df_priorities)
+  #print(type(df_priorities))
   query = 'word == \"'+word+'\"'
   res = df_priorities.query(query)
-  print(res)
+  #print(res)
   priority = int(res['point'].values[0])
-  print('priority: ',priority)
+  #print('priority: ',priority)
   return priority
 
 """### 加点行列をつくる"""
@@ -152,9 +153,9 @@ def Conjuction_addmat(rules, matsize, cur, arr_attr, priority):
   rules['from_end'] = rules['from_end'].fillna(-cur)
   rules['to_start'] = rules['to_start'].fillna(-cur)
   rules['to_end'] = rules['to_end'].fillna(matsize)
-#  print(rules)
+#  #print(rules)
   for index, rule in rules.iterrows():
-#    print(rule)
+#    #print(rule)
     point = int(abs(rule['point'])*(priority))
     adder_fromstart = cur + int(rule['from_start'])
     adder_fromend = cur + int(rule['from_end'])+1
@@ -162,18 +163,18 @@ def Conjuction_addmat(rules, matsize, cur, arr_attr, priority):
     adder_toend = cur + int(rule['to_end'])+1
     
     if np.isnan(rule['if_loc']) != True:
-      print("drs-prot:158\n",rule,"\n", cur+int(rule['if_loc']), arr_attr)
+      #print("drs-prot:158\n",rule,"\n", cur+int(rule['if_loc']), arr_attr)
       if cur+int(rule['if_loc']) < matsize:
         if arr_attr[cur+int(rule['if_loc'])] == rule['if_is']:
-          #print(point,"points [",adder_fromstart,":",adder_fromend,"] to [",adder_tostart,":",adder_toend,"] with \"", rules['attr'].tolist()[0],"\"")
-  #        print(points_mat[adder_fromstart:adder_fromend][adder_tostart:adder_toend])
+          ##print(point,"points [",adder_fromstart,":",adder_fromend,"] to [",adder_tostart,":",adder_toend,"] with \"", rules['attr'].tolist()[0],"\"")
+  #        #print(points_mat[adder_fromstart:adder_fromend][adder_tostart:adder_toend])
           points_mat[adder_fromstart:adder_fromend,adder_tostart:adder_toend] += point
-          points_mat[adder_tostart:adder_toend,adder_fromstart:adder_fromend] += point
+          #points_mat[adder_tostart:adder_toend,adder_fromstart:adder_fromend] += point
     else:
-      #print(point,"points [",adder_fromstart,":",adder_fromend,"] to [",adder_tostart,":",adder_toend,"] with \"", rules['attr'].tolist()[0],"\"")
+      ##print(point,"points [",adder_fromstart,":",adder_fromend,"] to [",adder_tostart,":",adder_toend,"] with \"", rules['attr'].tolist()[0],"\"")
       points_mat[adder_fromstart:adder_fromend,adder_tostart:adder_toend] += point
-      points_mat[adder_tostart:adder_toend,adder_fromstart:adder_fromend] += point
-#    print(points_mat,"\n")
+      #points_mat[adder_tostart:adder_toend,adder_fromstart:adder_fromend] += point
+#    #print(points_mat,"\n")
   return points_mat
 
 #Conjuction_addmat(rules, 5, 3, ["ground", "ground", "ground", "ground", "claim"])
@@ -216,13 +217,13 @@ def Directive_addmat(sentences, matsize, point):
   points_mat = np.zeros((matsize, matsize), dtype=int)
   for s in range(1,len(sentences)):
     if re.match("この|あの|その|これ|それ",sentences[s][0][0]):
-      #print(sentences[s][0][0], " in ", s, "文目")
+      ##print(sentences[s][0][0], " in ", s, "文目")
       points_mat[s-1][s] += point
-      points_mat[s][s-1] += point
-  #print(points_mat)
+      #points_mat[s][s-1] += point
+  ##print(points_mat)
   return points_mat
 
-"""## 他キーワード"""
+"""## キーワード"""
 def Keyword_addmat(sentences, matsize, df_keywords):
   points_mat = np.zeros((matsize, matsize), dtype=int)
   for s in range(len(sentences)-1):
@@ -231,10 +232,10 @@ def Keyword_addmat(sentences, matsize, df_keywords):
       point = row["point"]
       for w in sentences[s]:
         if keyword in w[0]:
-          #print(keyword, " in ", s, "文目")
-          points_mat[s+row["from"]][s+row["to"]] += point
-          points_mat[s+row["to"]][s+row["from"]] += point
-  #print(points_mat)
+          ##print(keyword, " in ", s, "文目")
+          points_mat[s+row["from"] if s+row["from"]>=0 else 0][s+row["to"]] += point
+          #points_mat[s+row["to"]][s+row["from"]] += point
+  ##print(points_mat)
   return points_mat
 
 
@@ -272,14 +273,14 @@ def Commonword_addmat(sentences, matsize, df_exeptwords, coef, thres):
       sentence_words2 = extract_words(sentences[s2])
       point, percentage = compare_sentences(sentence_words1, sentence_words2)
       per_mat[s1,s2] = percentage
-      per_mat[s2,s1] = percentage
+      #per_mat[s2,s1] = percentage
 
       if point > 0:
-        #print(s1+1, "文目と", s2+1, "文目の一致率: ", percentage)
+        ##print(s1+1, "文目と", s2+1, "文目の一致率: ", percentage)
         points_mat[s1,s2] = point
-        points_mat[s2,s1] = point
-  #print(points_mat)
-  #print(per_mat)
+        #points_mat[s2,s1] = point
+  ##print(points_mat)
+  ##print(per_mat)
   return points_mat
 
 
@@ -322,8 +323,8 @@ path_Conjuction_priority_Rest = "..\data\data_prot\Rules\Conjuction_priority_Res
 df_conjuction_attr = pd.read_csv(path_Conjuction_attr)
 df_conjuction_points = pd.read_csv(path_Conjuction_points)
 df_conjuction_priority_Add = pd.read_csv(path_Conjuction_priority_Add)
-print(df_conjuction_priority_Add)
-print(type(df_conjuction_priority_Add))
+#print(df_conjuction_priority_Add)
+#print(type(df_conjuction_priority_Add))
 df_conjuction_priority_Conc = pd.read_csv(path_Conjuction_priority_Conc)
 df_conjuction_priority_Cont = pd.read_csv(path_Conjuction_priority_Cont)
 df_conjuction_priority_Conv = pd.read_csv(path_Conjuction_priority_Conv)
@@ -339,7 +340,7 @@ df_conjuction_priority_arr = {
   '解説': df_conjuction_priority_Exp,
   '制限': df_conjuction_priority_Rest
 }
-print((df_conjuction_priority_arr['付加']))
+#print((df_conjuction_priority_arr['付加']))
 
 #指示代名詞
 #キーワード
@@ -367,7 +368,7 @@ def Point_matrix(paragraph, target):
       i+=1
     return words
 
-  print(paragraph, target)
+  #print(paragraph, target)
 
   #文を分かち書き
   sentences = parse_Parag_to_Word(paragraph)
@@ -394,39 +395,43 @@ def Point_matrix(paragraph, target):
   points_mat = np.array([[50]*target for i in range(target)])
 
   #要素分類
-  #print("---------------要素分類------------------------------------------------")
+  print("---------------要素分類------------------------------------------------")
   arr_content = Content_Classification(paragraph, wv_model, sentence_attr_model)[:-1]
   arr_content.append('claim')
   #arr_content = ["ground", "ground", "ground", "claim", "claim", "claim", "claim", "claim", "ground", "claim"]
   content_addmat = Content_addmat(arr_content, target, df_Content_points)
-  #print(arr_content,"\n",content_addmat)
+  print(arr_content,"\n",content_addmat)
   points_mat += content_addmat
 
   #指示代名詞
-  #print("---------------指示代名詞------------------------------------------------")
+  ##print("---------------指示代名詞------------------------------------------------")
   #directive_addmat = Directive_addmat(sentences_, target, directive_point)
   #points_mat += directive_addmat
   
   #他キーワード+指示語
-  #print("---------------キーワード------------------------------------------------")
+  print("---------------キーワード------------------------------------------------")
   keyword_addmat = Keyword_addmat(sentences_, target, df_keywords)
   points_mat += keyword_addmat
+  print(keyword_addmat)
 
   #共通の単語
-  #print("---------------共通の単語------------------------------------------------")
+  print("---------------共通の単語------------------------------------------------")
   commonword_addmat = Commonword_addmat(sentences_, target, df_exeptwords, commonwords_coef, commonwords_thres)
   points_mat += commonword_addmat
+  print(commonword_addmat)
 
   #接続詞の加点行列
-  #print("---------------接続詞------------------------------------------------")
+  print("---------------接続詞------------------------------------------------")
   conjuction_addmat = Paragraph_to_Conjuction_addmat(df_conjuction_attr, df_conjuction_points, sentences_, arr_content, df_conjuction_priority_arr)
   conjuction_addmat['matrix'] = conjuction_addmat['matrix'].map(lambda x: x + points_mat)
-  #print("---------------------------------------------------------------------")
   print(conjuction_addmat)
+  print("---------------------------------------------------------------------")
+  
   res_mat = []
   res_label = []
   i = 0
   for index, row in conjuction_addmat.iterrows():
+    print(row['label'],row['matrix'],"\n")
     res_mat.append(row['matrix'].tolist())
     res_label.append(row['label'])
     i+=1
@@ -436,4 +441,4 @@ def Point_matrix(paragraph, target):
 
   
 if __name__ == '__main__':
-  print(Point_matrix("図7のグラフから,いずれの関数を用いた処理でもバッファサイズを大きくすると,その処理速度が向上する傾向にあるということが分かった。また,システムコールであるread(),write()はバッファサイズが小さいと,C言語の標準関数であるfread(),fwrite()よりも処理に時間がかかることが分かった。更に,バッファサイズを増加させていくと,read(),write()による処理の方が安定し,かつ,fread(),fwrite()よりも多少速いことが確認できた。以下,このような結果となった要因を考察して行く。 バッファサイズを大きくしてゆくと,read(),write()やfread(),fwrite()が一度に読み込むことのできるデータのバイト数が大きくなるため,ストリームに流されたデータを読み込むためにそれらの処理を呼び出す回数が少なくなると考えられる。また,青木峰郎によれば,「read()はバッファを経由した、固定バイト数の入力しかできません。そこでstdioは、まず独自のバッファ(buffer)を用意します」としている1。また,「stdioの1バイト単位APIならば、速度を落とさずに小さい単位で読み込むことができるのです」としている2。fread(),fwrite()による処理の方が,バッファサイズが小さいとき,システムコールよりも速いことの要因としてstdioの用意する独自のバッファが挙げられる。fread()やfwrite()などの標準関数はその実行に当たっては,システムコールであるread()やwrite()を実行している3,何故なら,入出力などのハードウェアとのやり取りをするにはカーネルを仲介する必要があり,これをコマンドの形でまとめたのがシステムコールだからである。このことから,fread()やfwrite()はstdioが用意するバッファを経由して入力または出力するデータをやり取りするバッファリングを行っているため,これ等の関数を何度も呼び出すのではなく,要求された分のデータのみを渡すことで,バッファサイズが小さい段階でシステムコールよりも速く動作すると考えられる。バッファサイズの増加に伴い,read()やwrite()方が標準関数よりも多少速く動作するようになるのは,前述の通り,fread()やfwrite()はバッファを経由し,また,内部ではシステムコールを読んでいるため,read(),write()を単体で用いた場合よりも,実行する手順が多く,また,バッファサイズの増加により,stdioの用意するバッファが無くとも,処理速度に違いがなくなっていくことに起因していると考えられる。しかしながら,ここで新たな疑問が生じる。果たして,このままバッファサイズを大きくし続けた場合,その処理速度はどのように変化していくのか,ということである。必須課題1の実験では,バッファサイズは1024から101376バイトまで変化させている。このバッファサイズをさらに大きくして,それぞれのプログラムの処理速度を計測した。計測結果のグラフを以下の図8に示す。なお,分かりやすさのために,外れ値と考えられる値は考慮せず,また,表示する処理時間の幅を狭くしている。 ", 10))
+  print(Point_matrix("グラフを見ると、バッファサイズが非常に小さいときファイルサイズが大きいと非常に時間がかかっている。またread/writeの方がrecv/sendより僅かの差だが、多くの時間を要している。そして、バッファサイズを大きくしていっても、同様にread/writeがrecv/sendより速くなることはなかった。この要因は、ファイルの通信処理はソケットを用いて通信した方が速くなるからであると考える。", 10))
