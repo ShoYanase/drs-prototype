@@ -34,7 +34,7 @@
   <button id="delete-button" class="editbutton" type="button" value="">Delete Edge</button>
 
   <form id="subform" onsubmit="AJAXSubmit(this, 'point_matrix'); return false;">
-    <button id="spbutton" class="splitbutton" type="button" value="" onclick=" AJAXSubmit_json(JSON.stringify({text_in : document.getElementById('text-input').value}), 'split_parag')">SPLIT</button>
+    <button id="spbutton" class="splitbutton" type="button" value="" onclick=" AJAXSubmit_json(JSON.stringify({text_in : document.getElementById('text-input').value}), 'split_parag'); splitParagraph(document.getElementById('text-input').value)">SPLIT</button>
     <button id="undo-button" class="undobutton" type="button" onclick="console.log('undobutton');UndoAction();"></button>
     <button id="redo-button" class="redobutton" type="button" onclick="console.log('redobutton');RedoAction();"></button>
   
