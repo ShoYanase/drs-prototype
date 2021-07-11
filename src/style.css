@@ -5,11 +5,12 @@
 }
 
 header {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     height: 27px;
     width: 100%;
+    z-index:9999;
     display: flex;
     justify-content: start;
     font-family: consolas;

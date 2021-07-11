@@ -91,7 +91,6 @@ function make_edges(matrix, thres){
 
 function concutArrays(array){
   base = [];
-  console.log(array);
   if(Array.isArray(array)){
     for(let a=0; a<array.length; a++){
       base = base.concat(array[a]);
@@ -119,7 +118,6 @@ function makeThresholdArray(matrix_, thres_){
   thres_arr = thres_arr.filter(x => x>=thres_);
   if(thres_arr.length > 0){
     thres_arr = sortNum(thres_arr);
-    console.log(matrix_,thres_arr);
   }else{
     makeThresholdArray(matrix_, thres_-1);
   }
@@ -249,10 +247,6 @@ function act_mynetwork(labels_, matrix_, thres_, mat_label_, threshold_range, co
      eventEdgeDblclicled(network);
     }
   }
-  //kokokara
-  console.log(main_network);
-  console.log(network_arr);
-  
   //NetworkContext();
   disableHierarchy(main_network);
   eventEdgeDblclicled(main_network);

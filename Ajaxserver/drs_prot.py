@@ -174,7 +174,7 @@ def Conjuction_addmat(rules, matsize, cur, arr_attr, priority):
       ##print(point,"points [",adder_fromstart,":",adder_fromend,"] to [",adder_tostart,":",adder_toend,"] with \"", rules['attr'].tolist()[0],"\"")
       points_mat[adder_fromstart:adder_fromend,adder_tostart:adder_toend] += point
       #points_mat[adder_tostart:adder_toend,adder_fromstart:adder_fromend] += point
-#    #print(points_mat,"\n")
+    print(points_mat,"\n")
   return points_mat
 
 #Conjuction_addmat(rules, 5, 3, ["ground", "ground", "ground", "ground", "claim"])
@@ -435,7 +435,7 @@ def Point_matrix(paragraph, target):
     res_mat.append(row['matrix'].tolist())
     res_label.append(row['label'])
     i+=1
- 
+  print(arr_content)
 
   return res_mat, res_label, words, arr_content, sentence_full
 
